@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>Exemple Actu</title>
+    <link>https://exemple-actu.fr</link>
+    <description>Flux de test</description>
+    <item>
+      <title>Canicule précoce : records battus dans trois régions</title>
+      <link>https://exemple-actu.fr/canicule-records</link>
+      <pubDate>Wed, 04 Jun 2026 18:00:00 GMT</pubDate>
+      <description>&lt;p&gt;Des records de chaleur enregistrés dès début juin…&lt;/p&gt;</description>
+      <media:content url="https://exemple-actu.fr/img/canicule.jpg" type="image/jpeg" width="1200" height="630"/>
+    </item>
+    <item>
+      <title>Élections locales : ce qu'il faut retenir</title>
+      <link>https://exemple-actu.fr/elections-locales</link>
+      <pubDate>Wed, 04 Jun 2026 17:00:00 GMT</pubDate>
+      <description>Résultats et analyses, image fournie en pièce jointe.</description>
+      <enclosure url="https://exemple-actu.fr/img/elections.png" type="image/png" length="12345"/>
+    </item>
+    <item>
+      <title>Reportage : le marché aux fleurs rouvre</title>
+      <link>https://exemple-actu.fr/marche-fleurs</link>
+      <pubDate>Wed, 04 Jun 2026 16:00:00 GMT</pubDate>
+      <description>&lt;p&gt;Visite guidée &lt;img src="https://exemple-actu.fr/img/fleurs.gif" alt="Le marché"/&gt; en images.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Brève sans aucune image</title>
+      <link>https://exemple-actu.fr/breve-texte</link>
+      <pubDate>Wed, 04 Jun 2026 15:00:00 GMT</pubDate>
+      <description>Un texte court, sans illustration.</description>
+    </item>
+  </channel>
+</rss>
