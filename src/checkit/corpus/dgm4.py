@@ -9,6 +9,7 @@ download, once the on-disk layout is inspected.
 
 import json
 import logging
+import uuid
 from pathlib import Path
 
 from checkit.schema import RawRecord
@@ -45,13 +46,20 @@ def metadata_to_records(json_path: Path, split: str,
     records = []
     for entry in entries:
         fake_cls = entry.get("fake_cls", "orig")
+        image = entry.get("image", "")
+        text = entry.get("text", "")
         records.append(RawRecord(
             raw_source="dgm4",
-            headline=entry.get("text", ""),
-            raw_source_id=str(entry.get("id")),
+            headline=text,
+            # sample identity = (image, text): 'id' is shared by a news item's
+            # variants, and a text-swap variant re-uses the original's image —
+            # only the pair is unique (and yields the paper's 230,000 exactly)
+            record_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"dgm4:{image}|{text}")),
+            raw_source_id=image or str(entry.get("id")),
             language="en",
             extras={
                 "split": split,
+                "dgm4_item_id": str(entry.get("id")),
                 "image_path": entry.get("image", ""),
                 "label": "real" if fake_cls == "orig" else "fake",
                 "fine_grained_label": f"dgm4:{fake_cls}",

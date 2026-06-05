@@ -78,6 +78,21 @@ def test_no_images_expected_label_feed_not_multimodal(tmp_path):
     assert all(r.image_url is None for r in records)
 
 
+def test_two_claims_under_one_factcheck_url_stay_distinct(tmp_path):
+    # regression: identity by URL alone collapsed 33K verdicts in the first run
+    feed = {"dataFeedElement": [
+        {"item": [{"claimReviewed": "Claim A", "author": {"name": "X"},
+                   "url": "https://fc.example/one-article"}]},
+        {"item": [{"claimReviewed": "Claim B", "author": {"name": "X"},
+                   "url": "https://fc.example/one-article"}]},
+    ]}
+    p = tmp_path / "data.json"
+    p.write_text(json.dumps(feed), encoding="utf-8")
+    records = feed_to_records(p)
+    assert len(records) == 2
+    assert records[0].record_id != records[1].record_id
+
+
 def test_malformed_dates_in_the_wild_become_none(tmp_path):
     # seen live in the dump: datePublished '20204-08-02' (five-digit year)
     feed = {"dataFeedElement": [{"item": [{
