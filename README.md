@@ -70,8 +70,9 @@ dashboard/            tableau de bord Streamlit (étape 5)
 - [x] Qualification des sources (86 examinées, licences vérifiées sur pièces)
 - [x] Socle : configuration, schéma commun, stockage JSONL
 - [x] Extracteurs sans clé : GDELT, Bluesky, RSS (+ fallback `og:image` pour la satire)
-- [ ] Adaptateurs APIs presse à clé (NewsData, Guardian, GNews, …)
-- [ ] Téléchargeurs de corpus annotés (DGM4, Fakeddit, FakeNewsNet)
+- [x] Adaptateurs APIs presse à clé (NewsData, Guardian, GNews, Currents, Mediastack, TheNewsAPI, World News) — code testé sur fixtures, validation live à l'enregistrement des clés
+- [x] Corpus annoté FakeNewsNet (23 196 métadonnées + labels PolitiFact/GossipCop)
+- [ ] Corpus annotés DGM4 + Fakeddit ; criblage images FakeNewsNet
 - [ ] Pipeline de transformation + schéma conceptuel
 - [ ] DAGs Airflow → PostgreSQL sécurisé
 - [ ] Dashboard KPI + plan de monitoring
