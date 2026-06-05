@@ -1,9 +1,16 @@
 import io
 
+import pytest
 import responses
 from PIL import Image
 
+from checkit.transform import images as images_mod
 from checkit.transform.images import valide_image
+
+
+@pytest.fixture(autouse=True)
+def no_throttle(monkeypatch):
+    monkeypatch.setattr(images_mod, "IMG_MIN_INTERVAL", 0.0)
 
 
 def png_bytes() -> bytes:

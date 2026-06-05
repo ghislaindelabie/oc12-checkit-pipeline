@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 
 from checkit.extract.http import get
+from checkit.extract.throttle import THROTTLE
 from checkit.schema import RawRecord
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,9 @@ class NewsApiSpec:
     build_params: Callable[[str, datetime, datetime, int, str], dict]
     items: Callable[[dict], list]
     to_record: Callable[[dict], RawRecord]
+    # conservative inter-request pacing, refined per provider's STATED limit
+    # at first live validation (see docs/rate-limits.md)
+    min_interval: float = 1.0
 
 
 def fetch_news_api(
@@ -64,6 +68,7 @@ def fetch_news_api(
     api_key: str,
 ) -> list[RawRecord]:
     params = spec.build_params(query, start, end, limit, api_key)
+    THROTTLE.wait(f"api:{spec.name}", spec.min_interval)
     payload = get(spec.url, params=params).json()
     try:
         items = spec.items(payload) or []
@@ -93,6 +98,7 @@ SPECS: dict[str, NewsApiSpec] = {
             "apikey": k, "q": q, "language": "fr", "image": "1",
         },
         items=lambda p: p["results"],
+        min_interval=2.0,
         to_record=lambda a: RawRecord(
             raw_source="api:newsdata",
             headline=a.get("title", ""),
@@ -168,6 +174,7 @@ SPECS: dict[str, NewsApiSpec] = {
     "mediastack": NewsApiSpec(
         name="mediastack",
         url="http://api.mediastack.com/v1/news",
+        min_interval=2.0,
         build_params=lambda q, s, e, n, k: {
             "access_key": k, "keywords": q, "languages": "fr",
             "date": f"{_d(s)},{_d(e)}", "limit": str(min(n, 100)),

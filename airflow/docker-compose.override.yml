@@ -1,0 +1,22 @@
+# Astro local-dev overrides:
+# - mount the checkit package (PYTHONPATH) so DAG code changes need no rebuild
+# - mount the data drive at the same path as on the host
+# - host-gateway so containers reach the data Postgres on host port 5433
+x-checkit: &checkit
+  volumes:
+    - ../src:/usr/local/airflow/checkit_src/src:ro
+    - /data/files/OC12:/data/files/OC12
+  environment:
+    PYTHONPATH: /usr/local/airflow/checkit_src/src
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+services:
+  scheduler:
+    <<: *checkit
+  dag-processor:
+    <<: *checkit
+  triggerer:
+    <<: *checkit
+  api-server:
+    <<: *checkit

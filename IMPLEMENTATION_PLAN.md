@@ -15,7 +15,7 @@ gated by tests (TDD) and, where it touches the outside world, by a live smoke ru
 | 2 | Corpus layer (labeled datasets + fact-check) | **Step 2** (+ feeds Step 1 evidence) | 🔄 in progress |
 | 3 | Step 1 report writing (French) | **Step 1** | ⬜ next after corpus screens |
 | 4 | Transform pipeline + conceptual schema | **Step 3** | ✅ done (999,992 rows, valid 97.8%) |
-| 5 | Airflow ETL → secured PostgreSQL | **Step 4** | ⬜ |
+| 5 | Airflow ETL → secured PostgreSQL | **Step 4** | ✅ done (978K rows loaded, 3 DAGs, evidence in deliverables/step4) |
 | 6 | KPI dashboard + monitoring plan | **Step 5** | ⬜ |
 
 ## Phase detail
@@ -66,7 +66,7 @@ once fact-check layer lands; owner proofread before hand-in.
   field dictionary → `docs/conceptual_schema.md`. Physical DDL stays in Phase 5
   (conceptual ≠ physical is a graded trap).
 
-### Phase 5 — Airflow ETL → secured PostgreSQL ⬜
+### Phase 5 — Airflow ETL → secured PostgreSQL ✅
 
 - PostgreSQL 16 container (compose): `articles` (UNIQUE(url), JSONB extras),
   `pipeline_metrics`; scram-sha-256; `etl_writer`/`dashboard_reader`; pgcrypto

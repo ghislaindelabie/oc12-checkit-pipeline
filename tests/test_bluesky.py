@@ -1,9 +1,16 @@
 import json
 from pathlib import Path
 
+import pytest
 import responses
 
+from checkit.extract import bluesky_client
 from checkit.extract.bluesky_client import BSKY_SEARCH_URL, fetch_bluesky, pseudonymize
+
+
+@pytest.fixture(autouse=True)
+def no_throttle(monkeypatch):
+    monkeypatch.setattr(bluesky_client, "BSKY_MIN_INTERVAL", 0.0)
 
 FIXTURE = Path(__file__).parent / "fixtures" / "bluesky_search.json"
 

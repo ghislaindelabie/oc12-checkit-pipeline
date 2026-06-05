@@ -6,9 +6,20 @@ from bs4 import BeautifulSoup
 
 from checkit.extract.feeds import Feed
 from checkit.extract.http import get
+from checkit.extract.throttle import THROTTLE
 from checkit.schema import RawRecord
 
 logger = logging.getLogger(__name__)
+
+# politeness toward publisher sites (no stated limit): 1 req/s per domain
+HOST_MIN_INTERVAL = 1.0
+
+
+def _polite_get(url: str):
+    from urllib.parse import urlparse
+
+    THROTTLE.wait(f"host:{urlparse(url).netloc}", HOST_MIN_INTERVAL)
+    return get(url)
 
 
 def _image_from_entry(entry) -> str | None:
@@ -34,7 +45,7 @@ def _image_from_entry(entry) -> str | None:
 
 def _og_image(article_url: str) -> str | None:
     try:
-        response = get(article_url)
+        response = _polite_get(article_url)
     except Exception:
         logger.warning("og:image fetch failed for %s", article_url)
         return None
@@ -72,7 +83,7 @@ def parse_feed(content: bytes, feed: Feed) -> list[RawRecord]:
 
 
 def fetch_rss(feed: Feed) -> list[RawRecord]:
-    response = get(feed.url)
+    response = _polite_get(feed.url)
     records = parse_feed(response.content, feed)
     logger.info("rss:%s fetched %d entries", feed.name, len(records))
     return records
@@ -91,7 +102,7 @@ def probe_report(content: bytes, feed: Feed) -> dict:
 
 def probe_feed(feed: Feed) -> dict:
     try:
-        response = get(feed.url)
+        response = _polite_get(feed.url)
     except Exception as exc:  # a dead feed is a result, not a crash
         return {"feed": feed.name, "error": str(exc), "entries": 0,
                 "with_image": 0, "image_rate": 0.0}

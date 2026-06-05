@@ -47,6 +47,20 @@ uv run python -m checkit.extract --source gdelt --query "desinformation sourcela
 uv run python -m checkit.extract --source bluesky --query "fake news" --limit 50
 ```
 
+Transformation puis chargement en base (PostgreSQL 16 sécurisé) :
+
+```bash
+uv run python -m checkit.transform                 # → Parquet + run_report.json
+docker compose -f docker-compose.db.yml up -d      # base de données (port 5433)
+uv run python -m checkit.load_cli                  # porte qualité → chargement idempotent
+```
+
+Orchestration Airflow 3.2 (Astro CLI, UI sur http://localhost:8081) :
+
+```bash
+cd airflow && astro dev start                      # 3 DAGs : @daily, @weekly, manuel
+```
+
 Les données (JSONL brut, Parquet, images, corpus) sont écrites sous
 `CHECKIT_DATA_ROOT` (par défaut `/data/files/OC12`), jamais dans le dépôt.
 
@@ -75,5 +89,6 @@ dashboard/            tableau de bord Streamlit (étape 5)
 - [ ] Corpus annotés DGM4 + Fakeddit ; criblage images FakeNewsNet
 - [x] Corpus ClaimReview (98 455 verdicts de fact-checkers) + rapport d'exploration (étape 1)
 - [x] Pipeline de transformation + schéma conceptuel (999 992 lignes, validité 97,8 %)
-- [ ] DAGs Airflow → PostgreSQL sécurisé
+- [x] Chargement PostgreSQL 16 sécurisé (978 289 lignes, idempotence prouvée, scram-sha-256 + rôles + pgcrypto)
+- [x] DAGs Airflow 3.2 (@daily, @weekly, corpus manuel) via Astro CLI
 - [ ] Dashboard KPI + plan de monitoring

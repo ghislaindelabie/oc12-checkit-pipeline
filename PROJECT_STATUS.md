@@ -67,6 +67,19 @@ Known gap: FakeNewsNet records are `pairing_basis=none` until the og:image
 enrichment job runs (admitted-with-rot decision #7) → its `is_valid`=0 for now,
 by design honesty.
 
+### Phase 5 — Airflow ETL → secured PostgreSQL (2026-06-05) ✅
+
+| Component | State |
+|---|---|
+| PostgreSQL 16 (dedicated container, port 5433) | ✅ `docker-compose.db.yml` — scram-sha-256 enforced (verified: even local psql needs auth), volume on the secondary drive |
+| Physical schema `db/schema.sql` | ✅ `articles` (28 cols, CHECK constraints, partial unique on url, 4 indexes) + `pipeline_metrics`; **distinct from the conceptual model** (graded trap defused) |
+| Security (the brief's 3 axes) | ✅ scram-sha-256 · least-privilege roles `etl_writer`/`dashboard_reader` (init script, generated passwords in .env) · pgcrypto: `author_pseudo_enc` encrypted at rest |
+| Load step (`checkit/load.py` + CLI) | ✅ psycopg3, batched, ON CONFLICT DO NOTHING; quality gate (ValueError if valid_rate<0.5); metrics → `pipeline_metrics` |
+| **Live load evidence** | ✅ **978,289 valid rows inserted**; immediate re-run: **0 inserted / 978,289 skipped — idempotency proven live** |
+| Airflow 3.2 via Astro CLI (Runtime 3.2-5) | ✅ project in `airflow/`; port 8081 (8080 taken on P710); package mounted via PYTHONPATH (no rebuild per code change); host-gateway to data Postgres |
+| 3 DAGs | ✅ `checkit_live_daily` (@daily: extract→transform→gate→load, window = data interval, XCom = paths only) · `checkit_factcheck_weekly` · `checkit_corpus_once` (manual) |
+| Run evidence | `deliverables/step4/preuves-execution.md` (CLI evidence in; DAG-run output appended after first triggered run) |
+
 ### Cross-cutting
 
 - **Method**: TDD throughout (**63 hermetic tests, <1 s**, zero network in tests);

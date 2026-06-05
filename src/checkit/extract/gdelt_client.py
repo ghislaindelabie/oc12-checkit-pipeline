@@ -1,18 +1,17 @@
 import logging
-import time
 from datetime import UTC, datetime
 
 from checkit.extract.http import get
+from checkit.extract.throttle import THROTTLE
 from checkit.schema import RawRecord
 
 logger = logging.getLogger(__name__)
 
 GDELT_DOC_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
 GDELT_DT_FORMAT = "%Y%m%d%H%M%S"
-# GDELT enforces one request per 5 seconds (verified live 2026-06-05;
-# bursts trigger a multi-minute penalty window)
+# STATED limit, by the API's own throttle message: "Please limit requests to
+# one every 5 seconds" (verified live 2026-06-05; bursts escalate the penalty)
 GDELT_MIN_INTERVAL = 5.5
-_last_call = 0.0
 
 LANGUAGE_CODES = {
     "french": "fr",
@@ -52,11 +51,7 @@ def fetch_gdelt(
     if end:
         params["enddatetime"] = end.astimezone(UTC).strftime(GDELT_DT_FORMAT)
 
-    global _last_call
-    wait = GDELT_MIN_INTERVAL - (time.monotonic() - _last_call)
-    if wait > 0:
-        time.sleep(wait)
-    _last_call = time.monotonic()
+    THROTTLE.wait("gdelt", GDELT_MIN_INTERVAL)
 
     response = get(GDELT_DOC_URL, params=params)
     try:

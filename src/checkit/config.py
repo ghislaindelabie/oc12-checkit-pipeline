@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     # Salts author pseudonymization (Bluesky); override in .env.
     pseudo_salt: SecretStr = SecretStr("checkit-local-salt")
 
+    # pgcrypto key for the encrypted-at-rest column; override in .env.
+    enc_key: SecretStr = SecretStr("change-me-enc-key")
+
     newsdata_api_key: SecretStr | None = None
     guardian_api_key: SecretStr | None = None
     gnews_api_key: SecretStr | None = None
