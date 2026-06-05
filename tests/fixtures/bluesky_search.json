@@ -1,0 +1,44 @@
+{
+  "posts": [
+    {
+      "uri": "at://did:plc:abc123/app.bsky.feed.post/3kxyz22",
+      "cid": "bafyreiabc",
+      "author": {
+        "did": "did:plc:abc123",
+        "handle": "journaliste.bsky.social",
+        "displayName": "Une Journaliste"
+      },
+      "record": {
+        "$type": "app.bsky.feed.post",
+        "text": "Inondations dans le Sud : les images de la décrue",
+        "createdAt": "2026-06-04T21:45:00.000Z",
+        "langs": ["fr"]
+      },
+      "embed": {
+        "$type": "app.bsky.embed.images#view",
+        "images": [
+          {
+            "thumb": "https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:abc123/bafkrei123@jpeg",
+            "fullsize": "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:abc123/bafkrei123@jpeg",
+            "alt": "Rue inondée à Valence, eau jusqu'aux genoux"
+          }
+        ]
+      }
+    },
+    {
+      "uri": "at://did:plc:def456/app.bsky.feed.post/3kabc11",
+      "cid": "bafyreidef",
+      "author": {
+        "did": "did:plc:def456",
+        "handle": "texto.bsky.social"
+      },
+      "record": {
+        "$type": "app.bsky.feed.post",
+        "text": "Just text, no image here",
+        "createdAt": "2026-06-04T20:00:00.000Z",
+        "langs": ["en"]
+      }
+    }
+  ],
+  "cursor": ""
+}
