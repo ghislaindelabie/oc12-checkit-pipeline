@@ -1,0 +1,17 @@
+{
+  "pagination": {"limit": 25, "offset": 0, "count": 1, "total": 1},
+  "data": [
+    {
+      "author": "AFP relay",
+      "title": "Réseaux sociaux : alerte aux montages photo",
+      "description": "Des images détournées circulent…",
+      "url": "https://presse.example.com/montages-photo",
+      "source": "presse_example",
+      "image": "https://presse.example.com/img/montage.jpg",
+      "category": "general",
+      "language": "fr",
+      "country": "fr",
+      "published_at": "2026-06-05T04:30:00+00:00"
+    }
+  ]
+}

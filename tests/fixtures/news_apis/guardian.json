@@ -1,0 +1,22 @@
+{
+  "response": {
+    "status": "ok",
+    "total": 1,
+    "pages": 1,
+    "currentPage": 1,
+    "results": [
+      {
+        "id": "world/2026/jun/05/disinformation-network",
+        "type": "article",
+        "sectionName": "World news",
+        "webPublicationDate": "2026-06-05T07:15:00Z",
+        "webTitle": "Disinformation network dismantled across Europe",
+        "webUrl": "https://www.theguardian.com/world/2026/jun/05/disinformation-network",
+        "fields": {
+          "thumbnail": "https://media.guim.co.uk/abc/500.jpg",
+          "trailText": "Authorities identified a coordinated network…"
+        }
+      }
+    ]
+  }
+}

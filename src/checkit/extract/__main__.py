@@ -17,6 +17,7 @@ from checkit.config import Settings
 from checkit.extract.bluesky_client import fetch_bluesky
 from checkit.extract.feeds import FEEDS
 from checkit.extract.gdelt_client import fetch_gdelt
+from checkit.extract.news_apis import SPECS, fetch_news_api
 from checkit.extract.rss_source import fetch_rss, probe_feed
 from checkit.schema import RawRecord
 from checkit.storage import append_jsonl, raw_path
@@ -26,7 +27,8 @@ logger = logging.getLogger("checkit.extract")
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="checkit.extract")
-    parser.add_argument("--source", required=True, choices=["gdelt", "bluesky", "rss"])
+    parser.add_argument("--source", required=True,
+                        choices=["gdelt", "bluesky", "rss", "keyed", *SPECS])
     parser.add_argument("--query", default="désinformation")
     parser.add_argument("--from", dest="date_from", type=datetime.fromisoformat, default=None,
                         help="window start (ISO); defaults to 24h before --to")
@@ -48,6 +50,23 @@ def window(args: argparse.Namespace) -> tuple[datetime, datetime]:
     return start, end
 
 
+def _extract_keyed(names: list[str], args: argparse.Namespace,
+                   settings: Settings) -> list[RawRecord]:
+    start, end = window(args)
+    records: list[RawRecord] = []
+    for name in names:
+        if not settings.has_key(name):
+            logger.info("api:%s skipped (no key configured)", name)
+            continue
+        key = getattr(settings, f"{name}_api_key").get_secret_value()
+        try:
+            records.extend(fetch_news_api(SPECS[name], args.query, start=start,
+                                          end=end, limit=args.limit, api_key=key))
+        except Exception:
+            logger.exception("api:%s failed, continuing with other sources", name)
+    return records
+
+
 def extract(args: argparse.Namespace, settings: Settings) -> list[RawRecord]:
     start, end = window(args)
     if args.source == "gdelt":
@@ -55,6 +74,10 @@ def extract(args: argparse.Namespace, settings: Settings) -> list[RawRecord]:
     if args.source == "bluesky":
         salt = settings.pseudo_salt.get_secret_value()
         return fetch_bluesky(args.query, salt=salt, since=start, until=end, limit=args.limit)
+    if args.source == "keyed":
+        return _extract_keyed(list(SPECS), args, settings)
+    if args.source in SPECS:
+        return _extract_keyed([args.source], args, settings)
     records = []
     for feed in FEEDS:
         try:
