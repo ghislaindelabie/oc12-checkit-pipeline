@@ -14,7 +14,7 @@ gated by tests (TDD) and, where it touches the outside world, by a live smoke ru
 | 1 | Extraction layer (live connectors) | **Step 2** | ✅ code done; live validation: RSS/Bluesky/Guardian ✅, GDELT query tuning ◐, 6 APIs await keys ⬜ |
 | 2 | Corpus layer (labeled datasets + fact-check) | **Step 2** (+ feeds Step 1 evidence) | 🔄 in progress |
 | 3 | Step 1 report writing (French) | **Step 1** | ⬜ next after corpus screens |
-| 4 | Transform pipeline + conceptual schema | **Step 3** | ⬜ |
+| 4 | Transform pipeline + conceptual schema | **Step 3** | ✅ done (999,992 rows, valid 97.8%) |
 | 5 | Airflow ETL → secured PostgreSQL | **Step 4** | ⬜ |
 | 6 | KPI dashboard + monitoring plan | **Step 5** | ⬜ |
 
@@ -55,7 +55,7 @@ RawRecord (champs indispensables) · formats JSONL→Parquet · opinion/satire/
 désinformation · choix de conception transverses. Remaining: refresh numbers
 once fact-check layer lands; owner proofread before hand-in.
 
-### Phase 4 — Transform pipeline + conceptual schema ⬜
+### Phase 4 — Transform pipeline + conceptual schema ✅
 
 - `checkit/transform/`: lecture (JSONL) → traitement (nettoie_texte, valide_image,
   is_valid_pair, dedup SHA-256/pHash, label normalization incl. Fakeddit semantics

@@ -11,6 +11,7 @@ Refreshed upstream continuously → @weekly DAG re-downloads (dump-preferred rul
 
 import json
 import logging
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -60,6 +61,10 @@ def feed_to_records(json_path: Path, limit: int | None = None) -> list[RawRecord
             records.append(RawRecord(
                 raw_source="claimreview",
                 headline=claim,
+                # one fact-check URL can review several claims — identity
+                # must include the claim text, not the URL alone
+                record_id=str(uuid.uuid5(uuid.NAMESPACE_URL,
+                                         f"{item.get('url')}|{claim}")),
                 url=item.get("url"),
                 publish_date=_safe_date(item.get("datePublished")),
                 extras={

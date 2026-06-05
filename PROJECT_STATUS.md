@@ -1,6 +1,6 @@
 # OC12 / CheckIt.AI — Project status
 
-*Last update: 2026-06-05. Companion doc: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) (step-by-step plan and what's next). Decisions of record: [research/06-implementation-blueprint.md](research/06-implementation-blueprint.md) §8.*
+*Last update: 2026-06-05 (evening — transform pipeline landed). Companion doc: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) (step-by-step plan and what's next). Decisions of record: [research/06-implementation-blueprint.md](research/06-implementation-blueprint.md) §8.*
 
 ## What this project is
 
@@ -51,6 +51,22 @@ monitoring plan. Five graded deliverables, one per mission step.
 | ClaimReview aggregate dump (DataCommons) | ✅ **live: 98,455 verdicts** from IFCN fact-checkers worldwide, with appearance-URL join surface; ratings kept raw (multilingual). Malformed-date fix |
 | EUvsDisinfo | ⏸ 403 from server IPs (KNOWN_ISSUES) — ClaimReview covers the need |
 
+### Phase 4 — Transform pipeline (2026-06-05) ✅
+
+| Component | State |
+|---|---|
+| `checkit/transform/` — lecture / traitement / export stages | ✅ `nettoie_texte`, `text_fingerprint`, label normalization, pairing qualification, dedup, Parquet+CSV export, RunReport JSON |
+| Label normalization across 5 taxonomies | ✅ Fakeddit int conventions **pinned empirically** (subreddit crosstab, zero noise); ClaimReview multilingual map (FR/EN/ES/TR/ID/JA/FA/AR top values; 31K tail counted unmapped); confidence ladder 1.0 synthetic > 0.9 human > 0.6 distant |
+| Pairing qualification | ✅ `paired_ok` + `pairing_basis` {validated, bundled, declared, none} — strict and declared KPIs reported separately |
+| Identity correctness | ✅ two real bugs found by the first full run and fixed with regression tests: DGM4 sample identity = (image+text) — dedup now lands **exactly on the paper's 230,000** (152,574 fake / 77,426 real); ClaimReview identity = (url+claim) |
+| **Full live run** | ✅ **1,083,592 raw → 999,992 clean rows** in ~125 s; valid_rate **97.8%**, pairing declared **97.7%**, strict 24.8%; dups removed: 52,472 by id + 31,132 by content |
+| Conceptual schema (Mermaid, FR) | ✅ `docs/conceptual_schema.md` — PUBLICATION/IMAGE/LABEL/SOURCE, conceptual ≠ physical |
+| Outputs | `processed/dataset.parquet` (~1M rows), `dataset_index.csv`, `run_report.json` |
+
+Known gap: FakeNewsNet records are `pairing_basis=none` until the og:image
+enrichment job runs (admitted-with-rot decision #7) → its `is_valid`=0 for now,
+by design honesty.
+
 ### Cross-cutting
 
 - **Method**: TDD throughout (**63 hermetic tests, <1 s**, zero network in tests);
@@ -74,6 +90,9 @@ monitoring plan. Five graded deliverables, one per mission step.
 | `raw/fakeddit/` | 680,798 labeled multimodal records |
 | `raw/dgm4/` | 281,015 labeled records (synthetic manipulations, grounded) |
 | `raw/claimreview/` | 98,455 fact-check verdicts (label-join feed) |
+| `processed/dataset.parquet` | **999,992 clean rows** (the ML-ready dataset, v1) |
+| `processed/dataset_index.csv` | human-browsable index |
+| `processed/run_report.json` | KPIs: valid_rate 0.978, pairing declared 0.977/strict 0.248 |
 | `processed/fakenewsnet_screen.json` | image-rot screen report (decision #7 evidence) |
 | `corpora/fakenewsnet/` | 4 source CSVs (~44 MB) |
 | `corpora/fakeddit/` | multimodal + all TSVs (~60 MB) |

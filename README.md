@@ -73,6 +73,7 @@ dashboard/            tableau de bord Streamlit (étape 5)
 - [x] Adaptateurs APIs presse à clé (NewsData, Guardian, GNews, Currents, Mediastack, TheNewsAPI, World News) — code testé sur fixtures, validation live à l'enregistrement des clés
 - [x] Corpus annoté FakeNewsNet (23 196 métadonnées + labels PolitiFact/GossipCop)
 - [ ] Corpus annotés DGM4 + Fakeddit ; criblage images FakeNewsNet
-- [ ] Pipeline de transformation + schéma conceptuel
+- [x] Corpus ClaimReview (98 455 verdicts de fact-checkers) + rapport d'exploration (étape 1)
+- [x] Pipeline de transformation + schéma conceptuel (999 992 lignes, validité 97,8 %)
 - [ ] DAGs Airflow → PostgreSQL sécurisé
 - [ ] Dashboard KPI + plan de monitoring
