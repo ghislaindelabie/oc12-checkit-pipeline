@@ -19,6 +19,8 @@ dependencies = [
     "psycopg[binary]>=3.2",
     "gdown>=6.1.0",
     "huggingface-hub>=1.18.0",
+    "streamlit>=1.58.0",
+    "plotly>=6.8.0",
 ]
 
 [dependency-groups]

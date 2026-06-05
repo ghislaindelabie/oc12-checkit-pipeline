@@ -15,6 +15,7 @@ from checkit.corpus.claimreview import download_claimreview, load_claimreview
 from checkit.corpus.dgm4 import download_dgm4, load_dgm4
 from checkit.corpus.fakeddit import download_fakeddit, load_fakeddit
 from checkit.corpus.fakenewsnet import download_fakenewsnet, load_fakenewsnet
+from checkit.corpus.webz_fakenews import download_webz, load_webz
 from checkit.corpus.image_screen import screen_records
 from checkit.storage import append_jsonl, raw_path
 
@@ -26,7 +27,7 @@ def main(argv: list[str] | None = None) -> int:
                         format="%(asctime)s %(levelname)s %(name)s %(message)s")
     parser = argparse.ArgumentParser(prog="checkit.corpus")
     parser.add_argument("--dataset", required=True,
-                        choices=["fakenewsnet", "fakeddit", "dgm4", "claimreview"])
+                        choices=["fakenewsnet", "fakeddit", "dgm4", "claimreview", "webz"])
     parser.add_argument("--skip-download", action="store_true",
                         help="reuse already-downloaded files")
     parser.add_argument("--screen-images", action="store_true",
@@ -38,7 +39,11 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings()
     settings.ensure_dirs()
 
-    if args.dataset == "claimreview":
+    if args.dataset == "webz":
+        if not args.skip_download:
+            download_webz(settings.corpora_dir)
+        records = load_webz(settings.corpora_dir)
+    elif args.dataset == "claimreview":
         if not args.skip_download:
             download_claimreview(settings.corpora_dir)
         records = load_claimreview(settings.corpora_dir)

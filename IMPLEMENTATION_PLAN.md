@@ -16,7 +16,7 @@ gated by tests (TDD) and, where it touches the outside world, by a live smoke ru
 | 3 | Step 1 report writing (French) | **Step 1** | ⬜ next after corpus screens |
 | 4 | Transform pipeline + conceptual schema | **Step 3** | ✅ done (999,992 rows, valid 97.8%) |
 | 5 | Airflow ETL → secured PostgreSQL | **Step 4** | ✅ done (978K rows loaded, 3 DAGs, evidence in deliverables/step4) |
-| 6 | KPI dashboard + monitoring plan | **Step 5** | ⬜ |
+| 6 | KPI dashboard + monitoring plan | **Step 5** | ✅ done (live on :8501, monitoring plan delivered) |
 
 ## Phase detail
 
@@ -43,7 +43,7 @@ Remaining:
 - [ ] Read FakeNewsNet screen report → admission decision #7 (gate: usable pairing rate; rot rate becomes a KPI)
 - [ ] DGM4 layout inspection → record mapping + loader (+ tests)
 - [ ] Fakeddit label-semantics resolution against the paper (2/3/6-way int conventions) — in transform, not raw
-- [ ] Fact-check layer: ClaimReview dump (DataCommons) + EUvsDisinfo — dump-preferred rule; Google FCT as query-only illustration script
+- [x] Fact-check layer: ClaimReview dump ✅ (98K verdicts) · EUvsDisinfo blocked (403, documented) · Webz.io fake-news weekly drops ✅ (added 2026-06-05: live fake-side source, 94% pairing, ai_allow respected)
 - [ ] Image binaries: corpus-side image fetcher (Pillow-validated, SHA-256/pHash, `data/images/`), sampled for Fakeddit, full for screened FakeNewsNet subset
 
 ### Phase 3 — Step 1 report (French) ✅ v1 written
@@ -76,7 +76,7 @@ once fact-check layer lands; owner proofread before hand-in.
   delegating to the package; XCom carries paths only; quality gate aborts load
   if valid_rate < 0.5; run evidence (UI screenshots + logs) for the deliverable.
 
-### Phase 6 — Dashboard + monitoring ⬜
+### Phase 6 — Dashboard + monitoring ✅
 
 - Streamlit (FR UI): 4 `st.metric` + 3 charts on précision/rapidité/coût, reading
   `pipeline_metrics` via read-only role, ttl=300, empty-state guard, seed script.

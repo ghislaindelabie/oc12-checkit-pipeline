@@ -65,7 +65,45 @@ périssables. Chaque faiblesse est compensée par un autre corpus.
 | **Flux RSS presse FR** (France Info, 20 Minutes, Le Figaro) | Flux | `media:content`/`enclosure` (même item) | XML | FR | Aucun | flux publics destinés à la syndication ; usage mesuré, pas de republication | `feedparser` | **rendement image : 94–100 %** |
 | **Flux satire** (Le Gorafi, Nordpresse, The Onion) | Flux | `og:image` de la page article (repli) | XML+HTML | FR/EN | **Satire auto-déclarée** = classe à part entière | satire assumée publiquement | `feedparser` + repli `og:image` | 0 % en flux → **100 %** via repli (mesuré) |
 | **Bluesky** | API sociale | `embed.images[].fullsize` + texte (même post) | JSON | EN surtout | Aucun | CGU permissives pour la recherche — **seul réseau social vérifié conforme** | REST publique sans clé | validé (auteurs pseudonymisés) |
+| **Webz.io fake-news-dataset** | Corpus + flux hebdo | `thread.main_image` + `text` (même JSON) | ZIPs de JSON (GitHub) | EN 60%, RU 27%, ES/AR/ZH… | **Source-flaggé** (listes Wikipedia + filtre Webz) — faible, jamais un verdict | CGU Webz.io (licence de service) ; flag `ai_allow` par article respecté | Téléchargement incrémental + `zipfile` | **94 % d'appariement mesuré** ; ~106K articles (fév. 2025→) |
 | **ClaimReview / EUvsDisinfo** | Fact-checking | revendication + verdict (pas d'image systématique) | JSON/dump | FR/EN | **Verdicts de fact-checkers** | dumps ouverts ; l'API Google FCT interdit la base permanente → usage requête ponctuelle uniquement | téléchargement de dump | à intégrer |
+
+### Fiche détaillée — Webz.io fake-news-dataset (ajout du 2026-06-05)
+
+**Ce que c'est.** Dépôt GitHub public de Webz.io : un drop hebdomadaire (~1 000
+articles) collecté sur des sites identifiés comme éditeurs de fake news via les
+listes maintenues par Wikipedia (« List of fake news websites », campagnes de
+désinformation) et le filtre de confiance Webz (`trust.category:fake_news`).
+106 drops de février 2025 à aujourd'hui (~106K articles), toujours actif.
+
+**Apports.**
+- **La seule source vivante avec un label « fake »** : nos connecteurs live
+  produisent du contenu non vérifié, nos corpus annotés sont statiques — Webz
+  fournit un flux daté du jour, côté fake. Cadence hebdomadaire = alignée sur
+  notre DAG `checkit_factcheck_weekly`.
+- **Appariement excellent** : 94 % des articles portent `thread.main_image`
+  avec le texte intégral (médiane ~1 400 caractères) dans le même JSON — mesuré
+  sur le drop du 31 mai 2026.
+- **Richesse des métadonnées** : entités pré-extraites, langue, pays, rang de
+  domaine, sentiment — et un **flag `ai_allow` par article** que notre
+  ingestion respecte (les opt-outs ne sont jamais stockés).
+- **Couverture russophone** (27 %) : fenêtre rare sur l'écosystème de
+  désinformation russe.
+
+**Limites (documentées et encodées).**
+- **Label au niveau de la source, pas du contenu** : un article anodin publié
+  par un site flaggé est étiqueté `fake_news` (ex. constaté : un spoiler de
+  série TV). Traitement : `label_confidence = 0,5` (le plus bas de notre
+  échelle), `label_source = webz-source-flagged`, et drapeau `ambiguous` sur
+  les catégories divertissement/sport. À utiliser comme **signal faible**,
+  jamais comme vérité terrain.
+- **Pas de français** significatif (EN/RU dominants).
+- **`trust.bias`** (orientation politique) présent dans les données : conservé
+  brut en `extras`, **jamais utilisé comme label de véracité** (notre règle).
+- **Droits** : CGU de licence de service (pas de moissonnage de PII, pas de
+  démarchage commercial — sans objet pour nous), droit israélien ; contenu
+  sous responsabilité des éditeurs d'origine. Posture identique au reste du
+  projet : usage de recherche non commercial, jamais de redistribution.
 
 ## 5. Sources écartées — et pourquoi
 

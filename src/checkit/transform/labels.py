@@ -105,6 +105,12 @@ def normalize_label(record: RawRecord) -> Verdict:
         return Verdict("unverified", extras.get("fine_grained_label"),
                        extras.get("label_source"), None, ambiguous=True)
 
+    if source == "webz-fakenews":
+        # SOURCE-level distant supervision (publisher flagged, content not
+        # fact-checked) -> low confidence; entertainment items ambiguous
+        return Verdict("fake", "webz:source-flagged", "webz-source-flagged",
+                       0.5, ambiguous=bool(extras.get("entertainment")))
+
     if source.startswith("rss:") and extras.get("category") == "satire":
         return Verdict("satire", "satire:self-declared", "satire-self-declared", 0.95)
 
