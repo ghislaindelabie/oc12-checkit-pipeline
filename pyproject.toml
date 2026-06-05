@@ -17,6 +17,8 @@ dependencies = [
     "pandas>=2.2,<3.0",
     "pyarrow>=18.0",
     "psycopg[binary]>=3.2",
+    "gdown>=6.1.0",
+    "huggingface-hub>=1.18.0",
 ]
 
 [dependency-groups]
