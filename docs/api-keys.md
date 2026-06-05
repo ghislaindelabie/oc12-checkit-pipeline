@@ -27,6 +27,22 @@ pipeline (pattern *skip-if-no-key*). Renseigner les clés dans `.env`
 **Conseil d'ordre :** 1 et 2 d'abord (les deux adaptateurs les plus utiles : volume FR
 + archive historique) ; 3–7 ensuite, au fil de l'implémentation des adaptateurs.
 
+## Vérification de faits
+
+| Service | Inscription | Usage | Variable `.env` |
+|---|---|---|---|
+| Google Fact Check Tools | <https://console.cloud.google.com/> → activer « Fact Check Tools API » → créer une clé API (gratuit) | **Requêtes ponctuelles uniquement** (`python -m checkit.factcheck_query "affirmation"`) — les CGU interdisent toute base permanente ; le script n'a volontairement aucun chemin de stockage. Seule voie conforme vers les verdicts AFP Factuel | `CHECKIT_GOOGLE_FCT_API_KEY` |
+
+## TODO — EUvsDisinfo (téléchargement manuel depuis le Mac)
+
+Le site 403 les IP serveur (WAF). Depuis le **Mac** (IP résidentielle) :
+1. Ouvrir <https://euvsdisinfo.eu/disinformation-cases/> et utiliser l'export
+   (CSV/XLSX) de la base des cas.
+2. Déposer le fichier sur le P710 :
+   `scp ~/Downloads/euvsdisinfo*.csv p710:/data/files/OC12/corpora/euvsdisinfo/`
+3. Me le signaler — j'écris alors le loader (mapping RawRecord + labels
+   `euvsdisinfo:disinfo`, le plus fort signal FR/EU sur les narratifs pro-Kremlin).
+
 ## Hors APIs presse (plus tard dans le projet)
 
 - **Corpus annotés** (DGM4, Fakeddit, FakeNewsNet) : téléchargements directs,

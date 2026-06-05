@@ -83,6 +83,15 @@ once fact-check layer lands; owner proofread before hand-in.
 - Monitoring plan (FR, Markdown): seuils / gestion erreurs / fréquence, enforced
   vs observational explicitly mapped to real code; alert stub documented as stub.
 
+## Open TODOs (post-feature-complete polish)
+
+- [ ] **EUvsDisinfo**: owner downloads the CSV export from the Mac (residential IP) → drop in `/data/files/OC12/corpora/euvsdisinfo/` → loader to write (see docs/api-keys.md)
+- [ ] **Google FCT key**: owner registers (free, GCP console) → live-validate `checkit.factcheck_query` (built, fixture-tested)
+- [ ] FakeNewsNet og:image enrichment job (admitted-with-rot, decision #7)
+- [ ] GDELT FR query tuning at ~1 req/30s, then enable gdelt in the daily DAG
+- [ ] Remaining 6 news-API keys → live-validate adapters
+- [ ] Mentor-demo prep: UI screenshots (Airflow graph + dashboard) via SSH tunnel; owner proofread of FR deliverables
+
 ## Standing rules
 
 - TDD; suite stays hermetic and <5 s. Live smoke after every external-facing change.
