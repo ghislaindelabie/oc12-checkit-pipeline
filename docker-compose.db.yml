@@ -16,7 +16,10 @@ services:
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
       POSTGRES_HOST_AUTH_METHOD: scram-sha-256
     ports:
+      # loopback for host-side tools; docker-bridge gateway so Airflow
+      # containers reach the DB via host.docker.internal — LAN stays closed
       - "127.0.0.1:5433:5432"
+      - "172.17.0.1:5433:5432"
     volumes:
       - /data/files/OC12/postgres:/var/lib/postgresql/data
       - ./db/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro

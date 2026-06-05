@@ -1,7 +1,8 @@
 """Load step: clean Parquet -> secured PostgreSQL (idempotent).
 
-ON CONFLICT (record_id) DO NOTHING makes re-runs free: the DAG can be
-re-triggered during the demo without creating duplicates. Metrics from the
+Untargeted ON CONFLICT DO NOTHING makes re-runs free AND absorbs re-crawls:
+a live article re-fetched with a rotated image URL has a new record_id but
+the same url — either unique constraint skips it (first version wins). Metrics from the
 transform RunReport land in pipeline_metrics at the end of every load —
 which is exactly what the Step 5 dashboard reads.
 """
@@ -32,7 +33,7 @@ INSERT INTO articles (
     CASE WHEN %(author_pseudo_id)s::text IS NULL THEN NULL
          ELSE pgp_sym_encrypt(%(author_pseudo_id)s::text, %(enc_key)s::text) END,
     %(is_valid)s, %(validation_errors)s::jsonb
-) ON CONFLICT (record_id) DO NOTHING
+) ON CONFLICT DO NOTHING
 """
 
 INSERT_METRICS = """

@@ -40,19 +40,23 @@ def checkit_live_daily():
         from checkit.extract.__main__ import extract
         from checkit.storage import append_jsonl, raw_path
 
+        # Airflow 3: MANUAL runs carry no data interval (None) — fall back
+        # to a last-24h window so ad-hoc triggers behave like the CLI
+        end = data_interval_end or datetime.now(timezone.utc)
+        start = data_interval_start or end - timedelta(hours=24)
+
         settings = Settings()
         settings.ensure_dirs()
-        run_date = data_interval_end.strftime("%Y-%m-%d")
+        run_date = end.strftime("%Y-%m-%d")
         written = 0
         for source in ("rss", "bluesky", "keyed"):
             args = argparse.Namespace(
                 source=source, query="désinformation fake news",
-                date_from=data_interval_start, date_to=data_interval_end,
+                date_from=start, date_to=end,
                 limit=100, probe=False)
             records = [r for r in extract(args, settings) if r.image_url]
             written += append_jsonl(records, raw_path(settings.raw_dir, source, run_date))
-        print(f"extracted {written} paired records for window "
-              f"{data_interval_start} -> {data_interval_end}")
+        print(f"extracted {written} paired records for window {start} -> {end}")
         return str(Settings().raw_dir)
 
     @task
