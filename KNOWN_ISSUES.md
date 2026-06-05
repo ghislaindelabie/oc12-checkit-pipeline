@@ -35,3 +35,17 @@ shape and covered by hermetic fixture tests, but no live request has been made
 yet (keys not registered). At first live run per provider: confirm field names,
 date formats, quota behavior, then update fixtures if reality differs.
 Pagination is single-page per run until quotas are known.
+
+## EUvsDisinfo — 403 from server IPs (2026-06-05)
+
+euvsdisinfo.eu serves 403 to requests from the P710 (likely datacenter-IP WAF).
+The ClaimReview aggregate dump (98K verdicts incl. EU fact-checkers) covers the
+label-feed need; EUvsDisinfo retry later from another network or via their CSV
+export if a stronger pro-Kremlin-disinfo axis is wanted.
+
+## ClaimReview ratings — heterogeneous by design
+
+The dump aggregates fact-checkers worldwide: ratings come in many languages and
+formats (some are full paragraphs). Kept raw in extras.rating_raw; the transform
+step maps the high-frequency values (False/FALSE/Misleading/Faux/…) and leaves a
+long tail as unmapped (counted, not dropped).

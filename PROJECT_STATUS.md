@@ -48,7 +48,8 @@ monitoring plan. Five graded deliverables, one per mission step.
 | FakeNewsNet **image screen** (decision #7 gate) | ✅ **measured on 200-URL stratified sample: 47% og:image yield overall** (gossipcop fake 64% / real 58%; politifact fake 42% / real 24%); 65.5% pages reachable. **Verdict: ADMIT with documented rot** — est. ~10–11K paired records; rot rate becomes a headline KPI; politifact:real is the weak group |
 | Fakeddit downloader (Drive TSVs) + loader | ✅ **live: 680,798 multimodal records** (train 562,466 / val 59,169 / test 59,163 — matches the published ~682K subset). Label ints kept raw until transform |
 | DGM4 downloader (HF 10.7 GB) + loader | ✅ **live: 281,015 records** (= HF row count) across 9 fine-grained manipulation classes incl. combos; 128,441 orig / 152,574 manipulated; grounding flags kept |
-| Fact-check aggregators (ClaimReview dump, EUvsDisinfo) | ⬜ next |
+| ClaimReview aggregate dump (DataCommons) | ✅ **live: 98,455 verdicts** from IFCN fact-checkers worldwide, with appearance-URL join surface; ratings kept raw (multilingual). Malformed-date fix |
+| EUvsDisinfo | ⏸ 403 from server IPs (KNOWN_ISSUES) — ClaimReview covers the need |
 
 ### Cross-cutting
 
@@ -72,10 +73,12 @@ monitoring plan. Five graded deliverables, one per mission step.
 | `raw/fakenewsnet/` | 23,196 labeled metadata records |
 | `raw/fakeddit/` | 680,798 labeled multimodal records |
 | `raw/dgm4/` | 281,015 labeled records (synthetic manipulations, grounded) |
+| `raw/claimreview/` | 98,455 fact-check verdicts (label-join feed) |
 | `processed/fakenewsnet_screen.json` | image-rot screen report (decision #7 evidence) |
 | `corpora/fakenewsnet/` | 4 source CSVs (~44 MB) |
 | `corpora/fakeddit/` | multimodal + all TSVs (~60 MB) |
 | `corpora/dgm4/` | full HF snapshot (10 GB: metadata JSONs + image zips) |
+| `corpora/claimreview/` | 198 MB schema.org dump (@weekly refresh planned) |
 
 ## Known issues / risks
 

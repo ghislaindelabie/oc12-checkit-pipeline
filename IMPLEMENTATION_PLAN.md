@@ -46,14 +46,14 @@ Remaining:
 - [ ] Fact-check layer: ClaimReview dump (DataCommons) + EUvsDisinfo — dump-preferred rule; Google FCT as query-only illustration script
 - [ ] Image binaries: corpus-side image fetcher (Pillow-validated, SHA-256/pHash, `data/images/`), sampled for Fakeddit, full for screened FakeNewsNet subset
 
-### Phase 3 — Step 1 report (French) ⬜
+### Phase 3 — Step 1 report (French) ✅ v1 written
 
-Single Markdown report per blueprint §2 spec: méthodologie 5 axes · tableau
-comparatif of the integrated sources (≈10–12 fully qualified) · fiches per
-source with **binding-clause quotes** + extraction method · "écartées et
-pourquoi" table (refuted sources) · champs indispensables · opinion/satire/
-désinformation rule · output-format justification. All content already exists
-in research/ + live evidence — this is an assembly+writing task.
+`deliverables/step1/rapport-exploration-sources.md` (2026-06-05): méthodologie
+5 axes · architecture 3 couches · tableau comparatif (11 sources, volumes
+mesurés) · écartées-et-pourquoi (8 refus motivés) · cas Wardle · enveloppe
+RawRecord (champs indispensables) · formats JSONL→Parquet · opinion/satire/
+désinformation · choix de conception transverses. Remaining: refresh numbers
+once fact-check layer lands; owner proofread before hand-in.
 
 ### Phase 4 — Transform pipeline + conceptual schema ⬜
 

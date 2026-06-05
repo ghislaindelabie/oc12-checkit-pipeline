@@ -11,6 +11,7 @@ import sys
 from datetime import UTC, datetime
 
 from checkit.config import Settings
+from checkit.corpus.claimreview import download_claimreview, load_claimreview
 from checkit.corpus.dgm4 import download_dgm4, load_dgm4
 from checkit.corpus.fakeddit import download_fakeddit, load_fakeddit
 from checkit.corpus.fakenewsnet import download_fakenewsnet, load_fakenewsnet
@@ -25,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
                         format="%(asctime)s %(levelname)s %(name)s %(message)s")
     parser = argparse.ArgumentParser(prog="checkit.corpus")
     parser.add_argument("--dataset", required=True,
-                        choices=["fakenewsnet", "fakeddit", "dgm4"])
+                        choices=["fakenewsnet", "fakeddit", "dgm4", "claimreview"])
     parser.add_argument("--skip-download", action="store_true",
                         help="reuse already-downloaded files")
     parser.add_argument("--screen-images", action="store_true",
@@ -37,7 +38,11 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings()
     settings.ensure_dirs()
 
-    if args.dataset == "dgm4":
+    if args.dataset == "claimreview":
+        if not args.skip_download:
+            download_claimreview(settings.corpora_dir)
+        records = load_claimreview(settings.corpora_dir)
+    elif args.dataset == "dgm4":
         if not args.skip_download:
             download_dgm4(settings.corpora_dir)
         records = load_dgm4(settings.corpora_dir)
