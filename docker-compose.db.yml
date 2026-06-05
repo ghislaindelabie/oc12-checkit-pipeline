@@ -1,0 +1,31 @@
+# Data PostgreSQL (distinct from Airflow's metadata DB).
+#   docker compose -f docker-compose.db.yml up -d
+# Port 5433 on the host (5432 is taken by Airflow's metadata Postgres,
+# 8080 by an unrelated service on this machine).
+services:
+  checkit-postgres:
+    image: postgres:16
+    container_name: checkit-postgres
+    environment:
+      POSTGRES_DB: checkit
+      POSTGRES_USER: checkit_admin
+      POSTGRES_PASSWORD: ${CHECKIT_PG_ADMIN_PASSWORD:?set in .env}
+      CHECKIT_ETL_PASSWORD: ${CHECKIT_ETL_PASSWORD:?set in .env}
+      CHECKIT_DASHBOARD_PASSWORD: ${CHECKIT_DASHBOARD_PASSWORD:?set in .env}
+      # scram-sha-256 authentication (Step 4 security requirement)
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+    ports:
+      # loopback for host-side tools; docker-bridge gateway so Airflow
+      # containers reach the DB via host.docker.internal — LAN stays closed
+      - "127.0.0.1:5433:5432"
+      - "172.17.0.1:5433:5432"
+    volumes:
+      - /data/files/OC12/postgres:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./db/init-roles.sh:/docker-entrypoint-initdb.d/20-roles.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U checkit_admin -d checkit"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

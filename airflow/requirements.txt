@@ -1,0 +1,16 @@
+# Astro Runtime includes the following pre-installed providers packages: https://www.astronomer.io/docs/astro/runtime-image-architecture#provider-packages
+requests>=2.32
+tenacity>=9.0
+feedparser>=6.0
+beautifulsoup4>=4.12
+lxml>=5.0
+trafilatura>=2.0
+pillow>=12.0
+imagehash>=4.3
+pydantic>=2.9
+pydantic-settings>=2.6
+pandas>=2.2,<3.0
+pyarrow>=18.0
+psycopg[binary]>=3.2
+gdown
+huggingface_hub

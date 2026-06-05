@@ -7,11 +7,15 @@ import requests
 from PIL import Image
 
 from checkit.extract.http import USER_AGENT
+from checkit.extract.throttle import THROTTLE
 
 logger = logging.getLogger(__name__)
 
 MAX_BYTES = 10 * 1024 * 1024
 FETCH_TIMEOUT = 15.0
+# image CDNs are mostly distinct hosts; per-domain pacing protects the few
+# shared ones without slowing the overall fan-out
+IMG_MIN_INTERVAL = 0.5
 
 
 def valide_image(url: str, images_dir: Path) -> dict:
@@ -20,6 +24,9 @@ def valide_image(url: str, images_dir: Path) -> dict:
     Pillow verification is the only reliable proof the link is an exploitable
     image (an image_url that 404s or serves HTML is not a pairing).
     """
+    from urllib.parse import urlparse
+
+    THROTTLE.wait(f"img:{urlparse(url).netloc}", IMG_MIN_INTERVAL)
     try:
         response = requests.get(url, timeout=FETCH_TIMEOUT, stream=True,
                                 headers={"User-Agent": USER_AGENT})

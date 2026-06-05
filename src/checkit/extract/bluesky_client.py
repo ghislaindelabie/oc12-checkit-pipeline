@@ -5,12 +5,16 @@ from datetime import datetime
 import requests
 
 from checkit.extract.http import get
+from checkit.extract.throttle import THROTTLE
 from checkit.schema import RawRecord
 
 logger = logging.getLogger(__name__)
 
 # api.bsky.app, not public.api.bsky.app — the latter 403s server IPs (checked 2026-06-05)
 BSKY_SEARCH_URL = "https://api.bsky.app/xrpc/app.bsky.feed.searchPosts"
+# Published AppView limits ~3000 req/5min (~10/s); 1 req/s keeps us 10x under
+# and also softens the WAF that 403s fast pagination from server IPs
+BSKY_MIN_INTERVAL = 1.0
 
 
 def pseudonymize(identifier: str, salt: str) -> str:
@@ -43,6 +47,7 @@ def fetch_bluesky(
         if cursor:
             params["cursor"] = cursor
 
+        THROTTLE.wait("bluesky", BSKY_MIN_INTERVAL)
         try:
             payload = get(BSKY_SEARCH_URL, params=params).json()
         except requests.HTTPError as exc:

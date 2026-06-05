@@ -49,3 +49,16 @@ The dump aggregates fact-checkers worldwide: ratings come in many languages and
 formats (some are full paragraphs). Kept raw in extras.rating_raw; the transform
 step maps the high-frequency values (False/FALSE/Misleading/Faux/…) and leaves a
 long tail as unmapped (counted, not dropped).
+
+
+## Airflow local — three setup pitfalls solved (2026-06-05)
+
+1. **Container UID vs host data dirs**: Astro containers run as uid 50000; the
+   data dirs belong to the host user. Fixed with permissive modes on
+   /data/files/OC12 subdirs (setfacl unavailable without sudo). On a fresh
+   machine, re-apply: `chmod -R a+rwX /data/files/OC12/{raw,processed,images,corpora}`.
+2. **Data Postgres binding**: 127.0.0.1-only binding is unreachable from
+   containers via host.docker.internal; the compose now also binds the Docker
+   bridge gateway (172.17.0.1). LAN remains closed.
+3. **Airflow 3 manual runs have NO data interval** (None) — DAG code must not
+   assume `data_interval_end` exists; checkit_live_daily falls back to a 24h window.
