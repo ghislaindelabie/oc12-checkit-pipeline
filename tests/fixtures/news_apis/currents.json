@@ -1,0 +1,27 @@
+{
+  "status": "ok",
+  "news": [
+    {
+      "id": "cur-001",
+      "title": "Infox : le point hebdomadaire",
+      "description": "Le tour des fausses informations de la semaine…",
+      "url": "https://infos.example.org/infox-hebdo",
+      "author": "Rédaction",
+      "image": "https://infos.example.org/img/hebdo.png",
+      "language": "fr",
+      "category": ["world"],
+      "published": "2026-06-05 05:45:00 +0000"
+    },
+    {
+      "id": "cur-002",
+      "title": "Sans image cette fois",
+      "description": "…",
+      "url": "https://infos.example.org/sans-image",
+      "author": "",
+      "image": "None",
+      "language": "fr",
+      "category": [],
+      "published": "2026-06-05 05:00:00 +0000"
+    }
+  ]
+}

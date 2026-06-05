@@ -1,0 +1,18 @@
+{
+  "meta": {"found": 1, "returned": 1, "limit": 25, "page": 1},
+  "data": [
+    {
+      "uuid": "tna-001",
+      "title": "Deepfakes: detection tools improve",
+      "description": "New detection tooling shows progress…",
+      "keywords": "deepfake, detection",
+      "snippet": "New detection tooling shows progress against synthetic…",
+      "url": "https://news.example.io/deepfake-detection",
+      "image_url": "https://news.example.io/img/deepfake.jpg",
+      "language": "en",
+      "published_at": "2026-06-05T03:20:00.000000Z",
+      "source": "news.example.io",
+      "categories": ["tech"]
+    }
+  ]
+}

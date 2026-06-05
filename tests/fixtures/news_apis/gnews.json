@@ -1,0 +1,14 @@
+{
+  "totalArticles": 1,
+  "articles": [
+    {
+      "title": "Fausses informations : la plateforme réagit",
+      "description": "Une vague de contenus trompeurs…",
+      "content": "Une vague de contenus trompeurs circule…",
+      "url": "https://actu.example.fr/fausses-infos-plateforme",
+      "image": "https://actu.example.fr/img/plateforme.jpg",
+      "publishedAt": "2026-06-05T06:00:00Z",
+      "source": {"name": "Actu Exemple", "url": "https://actu.example.fr"}
+    }
+  ]
+}

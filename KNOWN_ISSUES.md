@@ -26,3 +26,12 @@ necessary, add an inter-page delay or authenticated AppView access.
 Le Gorafi and Nordpresse ship no image in their feeds (probed 0/20 and 0/10);
 images are fetched from each article page's `og:image` (one extra HTTP GET per
 entry, only for feeds flagged `og_fallback`). Probed yield after fallback: 5/5.
+
+## Keyed news-API adapters — live validation pending (2026-06-05)
+
+The 7 adapters (NewsData, Guardian, GNews, Currents, Mediastack, TheNewsAPI,
+World News API) are implemented against each provider's documented response
+shape and covered by hermetic fixture tests, but no live request has been made
+yet (keys not registered). At first live run per provider: confirm field names,
+date formats, quota behavior, then update fixtures if reality differs.
+Pagination is single-page per run until quotas are known.

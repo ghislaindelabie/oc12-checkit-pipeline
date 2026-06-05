@@ -1,0 +1,21 @@
+{
+  "status": "success",
+  "totalResults": 1,
+  "results": [
+    {
+      "article_id": "abc123",
+      "title": "Désinformation : une campagne virale démantelée",
+      "link": "https://www.exemple-presse.fr/desinformation-campagne",
+      "description": "Les autorités ont identifié un réseau…",
+      "content": "ONLY AVAILABLE IN PAID PLANS",
+      "pubDate": "2026-06-05 08:30:00",
+      "image_url": "https://www.exemple-presse.fr/img/campagne.jpg",
+      "source_id": "exemple_presse",
+      "source_url": "https://www.exemple-presse.fr",
+      "language": "french",
+      "country": ["france"],
+      "category": ["politics"]
+    }
+  ],
+  "nextPage": "1717582200abc"
+}
