@@ -1,0 +1,24 @@
+{
+  "articles": [
+    {
+      "url": "https://www.exemple-presse.fr/articles/inondations-2026",
+      "url_mobile": "",
+      "title": "Inondations : la décrue s'amorce dans le Sud",
+      "seendate": "20260604T213000Z",
+      "socialimage": "https://www.exemple-presse.fr/img/inondations.jpg",
+      "domain": "exemple-presse.fr",
+      "language": "French",
+      "sourcecountry": "France"
+    },
+    {
+      "url": "https://example.com/news/flood-update",
+      "url_mobile": "",
+      "title": "Flood update: waters receding",
+      "seendate": "20260604T220000Z",
+      "socialimage": "",
+      "domain": "example.com",
+      "language": "English",
+      "sourcecountry": "United States"
+    }
+  ]
+}

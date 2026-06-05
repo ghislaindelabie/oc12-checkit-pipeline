@@ -17,6 +17,9 @@ class Settings(BaseSettings):
 
     database_url: SecretStr = SecretStr("postgresql://checkit:checkit@localhost:5432/checkit")
 
+    # Salts author pseudonymization (Bluesky); override in .env.
+    pseudo_salt: SecretStr = SecretStr("checkit-local-salt")
+
     newsdata_api_key: SecretStr | None = None
     guardian_api_key: SecretStr | None = None
     gnews_api_key: SecretStr | None = None
