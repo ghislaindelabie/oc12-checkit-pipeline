@@ -1,0 +1,34 @@
+# OpenClassrooms proprietary material — never commit
+docs-internal/
+
+# Secrets
+.env
+.env.*
+!.env.example
+credentials*
+secrets/
+
+# Data (lives on /data/files/OC12, but guard any local copy too)
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Airflow / Astro local artifacts
+.astro/
+airflow_settings.yaml
+logs/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
