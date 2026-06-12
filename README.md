@@ -47,14 +47,13 @@ Réseau social       Bluesky                                ─┘  DAG @daily  
 
 Trois couches complémentaires : les **corpus annotés** portent les labels (vérité
 terrain), le **fact-checking** fournit une source de vérité réutilisable, les
-**connecteurs live** démontrent l'acquisition automatisée. Chiffres = enregistrements
-distincts et valides en base (~1,02 M au total).
+**connecteurs live** démontrent l'acquisition automatisée. Chiffres = enregistrements distincts et valides en base (**1 052 020** au total ; validité 98,8 %). Chaque enregistrement porte une **modalité** : `text_image` (953 730), `claim` (70 719) ou `text` (27 571) — on conserve et annote plutôt que de jeter le texte-seul.
 
 | Source | Type | Rôle | Labels (provenance · confiance) | En base |
 |---|---|---|---|---:|
 | **DGM4** | corpus | manipulations image/texte localisées | synthétiques exacts · 1,0 | 230 000 |
 | **Fakeddit** | corpus | plus grand corpus multimodal | supervision distante · 0,6 | 677 491 |
-| **FakeNewsNet** | corpus | labels fact-checkers humains | PolitiFact/GossipCop · 0,9 | 23 196 \* |
+| **FakeNewsNet** | corpus | labels fact-checkers humains | PolitiFact/GossipCop · 0,9 | 21 703 |
 | **ClaimReview** | fact-check | verdicts mondiaux + URLs de jonction | fact-checkers IFCN · 0,9 | 70 667 |
 | **EUvsDisinfo** | fact-check | narratifs pro-Kremlin FR/UE | analystes UE · 0,9 | 18 249 \* |
 | **Webz fake-news** | live « fake » | seule source live côté fake | site flaggé · 0,5 | 44 712 |
@@ -66,8 +65,9 @@ distincts et valides en base (~1,02 M au total).
 | **Bluesky** | réseau social | posts image+texte, auteurs pseudonymisés | — | 4 |
 | **Google Fact Check Tools** | API requête | verdicts AFP & co. — **jamais stocké** (CGU) | fact-checkers | requête |
 
-\* FakeNewsNet et EUvsDisinfo : labels chargés, appariement image en cours
-d'enrichissement (`og:image`). Décomposition complète et par étape :
+\* EUvsDisinfo : labels chargés, enrichissement texte+image en cours. FakeNewsNet est
+chargé en texte-seul (modalité `text`) en attendant l'enrichissement image — conservé,
+pas écarté (choix « conserver + annoter », cf. modalité ci-dessous). Décomposition complète :
 [`deliverables/rapport-projet.html`](deliverables/rapport-projet.html).
 
 **Choix de méthode notable —** EUvsDisinfo : le site live est protégé par un challenge
