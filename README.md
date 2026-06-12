@@ -47,7 +47,7 @@ Réseau social       Bluesky                                ─┘  DAG @daily  
 
 Trois couches complémentaires : les **corpus annotés** portent les labels (vérité
 terrain), le **fact-checking** fournit une source de vérité réutilisable, les
-**connecteurs live** démontrent l'acquisition automatisée. Chiffres = enregistrements distincts et valides en base (**1 052 020** au total ; validité 98,8 %). Chaque enregistrement porte une **modalité** : `text_image` (953 730), `claim` (70 719) ou `text` (27 571) — on conserve et annote plutôt que de jeter le texte-seul.
+**connecteurs live** démontrent l'acquisition automatisée. Chiffres = enregistrements distincts et valides en base (**1 062 558** au total ; validité 98,8 %). Chaque enregistrement porte une **modalité** : `text_image` (963 414), `claim` (70 719) ou `text` (28 425) — on conserve et annote plutôt que de jeter le texte-seul.
 
 | Source | Type | Rôle | Labels (provenance · confiance) | En base |
 |---|---|---|---|---:|
@@ -55,7 +55,7 @@ terrain), le **fact-checking** fournit une source de vérité réutilisable, les
 | **Fakeddit** | corpus | plus grand corpus multimodal | supervision distante · 0,6 | 677 491 |
 | **FakeNewsNet** | corpus | labels fact-checkers humains | PolitiFact/GossipCop · 0,9 | 21 703 |
 | **ClaimReview** | fact-check | verdicts mondiaux + URLs de jonction | fact-checkers IFCN · 0,9 | 70 667 |
-| **EUvsDisinfo** | fact-check | narratifs pro-Kremlin FR/UE | analystes UE · 0,9 | 18 249 \* |
+| **EUvsDisinfo** | fact-check | narratifs pro-Kremlin FR/UE | analystes UE · 0,9 | 10 538 |
 | **Webz fake-news** | live « fake » | seule source live côté fake | site flaggé · 0,5 | 44 712 |
 | **GDELT DOC 2.0** | API presse | flux multilingue + image, sans clé | — | live |
 | **The Guardian** | API presse | presse anglophone + vignette | — | 31 |
@@ -65,7 +65,7 @@ terrain), le **fact-checking** fournit une source de vérité réutilisable, les
 | **Bluesky** | réseau social | posts image+texte, auteurs pseudonymisés | — | 4 |
 | **Google Fact Check Tools** | API requête | verdicts AFP & co. — **jamais stocké** (CGU) | fact-checkers | requête |
 
-\* EUvsDisinfo : labels chargés, enrichissement texte+image en cours. FakeNewsNet est
+\* FakeNewsNet est
 chargé en texte-seul (modalité `text`) en attendant l'enrichissement image — conservé,
 pas écarté (choix « conserver + annoter », cf. modalité ci-dessous). Décomposition complète :
 [`deliverables/rapport-projet.html`](deliverables/rapport-projet.html).
