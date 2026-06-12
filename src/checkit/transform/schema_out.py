@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 Label = Literal["real", "fake", "satire", "unverified"]
 PairingBasis = Literal["validated", "bundled", "declared", "none"]
+Modality = Literal["text_image", "text", "claim"]
 
 
 class CleanRecord(BaseModel):
@@ -31,6 +32,7 @@ class CleanRecord(BaseModel):
     image_phash: str | None = None
     paired_ok: bool
     pairing_basis: PairingBasis
+    modality: Modality
 
     label: Label
     fine_grained_label: str | None = None
