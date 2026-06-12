@@ -86,7 +86,7 @@ expose des KPI sur un tableau de bord Streamlit assorti d'un plan de monitoring.
 sources sont qualifiées sur leur <b>document de droits contraignant</b> ; les images sont
 conservées localement, jamais redistribuées.</p>
 <div class="grid">
-  <div class="kpi"><div class="v">1 052 020</div><div class="l">articles en base</div></div>
+  <div class="kpi"><div class="v">1 062 558</div><div class="l">articles en base</div></div>
   <div class="kpi"><div class="v">98,8 %</div><div class="l">taux de validité</div></div>
   <div class="kpi"><div class="v">97,2 %</div><div class="l">appariement déclaré</div></div>
   <div class="kpi"><div class="v">13</div><div class="l">sources intégrées</div></div>
@@ -252,6 +252,7 @@ doublons (même article re-collecté, drops hebdomadaires Webz qui se recouvrent
 <tr><td>Fakeddit</td><td>corpus</td><td style="text-align:right">677 491</td><td style="text-align:right">371 033</td><td style="text-align:right">266 458</td><td style="text-align:right">40 000</td><td style="text-align:right">—</td><td style="text-align:right">déclarées</td></tr>
 <tr><td>DGM4</td><td>corpus</td><td style="text-align:right">230 000</td><td style="text-align:right">152 574</td><td style="text-align:right">77 426</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">230 000</td></tr>
 <tr><td>ClaimReview</td><td>fact-check</td><td style="text-align:right">70 719</td><td style="text-align:right">46 073</td><td style="text-align:right">1 384</td><td style="text-align:right">95</td><td style="text-align:right">23 167</td><td style="text-align:right">n/a</td></tr>
+<tr><td>EUvsDisinfo</td><td>fact-check</td><td style="text-align:right">10 538</td><td style="text-align:right">4 880</td><td style="text-align:right">5 658</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">déclarées</td></tr>
 <tr><td>Webz fake-news</td><td>live fake</td><td style="text-align:right">51 381</td><td style="text-align:right">51 381</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">déclarées</td></tr>
 <tr><td>FakeNewsNet</td><td>corpus</td><td style="text-align:right">21 703</td><td style="text-align:right">5 318</td><td style="text-align:right">16 385</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">texte seul*</td></tr>
 <tr><td>RSS France Info</td><td>flux</td><td style="text-align:right">239</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">239</td><td style="text-align:right">239</td></tr>
@@ -262,7 +263,7 @@ doublons (même article re-collecté, drops hebdomadaires Webz qui se recouvrent
 <tr><td>RSS Nordpresse</td><td>flux satire</td><td style="text-align:right">9</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">9</td><td style="text-align:right">—</td><td style="text-align:right">9</td></tr>
 <tr><td>The Guardian</td><td>API presse</td><td style="text-align:right">31</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">31</td><td style="text-align:right">31</td></tr>
 <tr><td>Bluesky</td><td>réseau social</td><td style="text-align:right">4</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">4</td><td style="text-align:right">4</td></tr>
-<tr style="font-weight:700;background:#eef4ff"><td>Total</td><td>—</td><td style="text-align:right">1 052 020</td><td style="text-align:right">626 379</td><td style="text-align:right">361 653</td><td style="text-align:right">40 190</td><td style="text-align:right">23 798</td><td style="text-align:right">~230 700</td></tr>
+<tr style="font-weight:700;background:#eef4ff"><td>Total</td><td>—</td><td style="text-align:right">1 062 558</td><td style="text-align:right">631 259</td><td style="text-align:right">367 311</td><td style="text-align:right">40 190</td><td style="text-align:right">23 798</td><td style="text-align:right">~230 700</td></tr>
 </table>
 <p class="small muted">*<b>Appariées (strict)</b> = image effectivement téléchargée + validée (Pillow),
 ou fournie avec le corpus (DGM4). FakeNewsNet est désormais chargé en <b>texte seul</b>
@@ -273,9 +274,9 @@ non multimodale par nature).</p>
 <h3>Par type de source</h3>
 <table>
 <tr><th>Type</th><th style="text-align:right">En base</th><th style="text-align:right">Part</th><th>Rôle</th></tr>
-<tr><td>Corpus annotés (DGM4, Fakeddit, FakeNewsNet)</td><td style="text-align:right">929 194</td><td style="text-align:right">88,3 %</td><td>charge utile d'entraînement + labels</td></tr>
-<tr><td>Fact-checking (ClaimReview)</td><td style="text-align:right">70 719</td><td style="text-align:right">6,7 %</td><td>verdicts + jonction</td></tr>
-<tr><td>Flux live « fake » (Webz)</td><td style="text-align:right">51 381</td><td style="text-align:right">4,9 %</td><td>seule source live côté fake</td></tr>
+<tr><td>Corpus annotés (DGM4, Fakeddit, FakeNewsNet)</td><td style="text-align:right">929 194</td><td style="text-align:right">87,4 %</td><td>charge utile d'entraînement + labels</td></tr>
+<tr><td>Fact-checking (ClaimReview, EUvsDisinfo)</td><td style="text-align:right">81 257</td><td style="text-align:right">7,6 %</td><td>verdicts + narratifs pro-Kremlin FR/UE</td></tr>
+<tr><td>Flux live « fake » (Webz)</td><td style="text-align:right">51 381</td><td style="text-align:right">4,8 %</td><td>seule source live côté fake</td></tr>
 <tr><td>Flux RSS (presse FR + satire)</td><td style="text-align:right">691</td><td style="text-align:right">0,07 %</td><td>ingestion FR + classe satire</td></tr>
 <tr><td>APIs presse (Guardian)</td><td style="text-align:right">31</td><td style="text-align:right">&lt;0,01 %</td><td>démonstration API à clé</td></tr>
 <tr><td>Réseau social (Bluesky)</td><td style="text-align:right">4</td><td style="text-align:right">&lt;0,01 %</td><td>posts image+texte pseudonymisés</td></tr>
@@ -288,7 +289,6 @@ pas de gonfler les chiffres. La valeur n'est pas le volume mais l'appariement et
 <h3>En cours d'intégration (non encore en base)</h3>
 <table>
 <tr><th>Source</th><th style="text-align:right">Cas (couche brute)</th><th>Statut</th></tr>
-<tr><td>EUvsDisinfo</td><td style="text-align:right">18 249</td><td>cas labellisés ; enrichissement texte+image en cours (échantillon : 65 % texte, 45 % image)</td></tr>
 <tr><td>Google Fact Check Tools</td><td style="text-align:right">—</td><td>requête ponctuelle, <b>jamais stocké</b> (conformité CGU)</td></tr>
 </table>
 
@@ -297,9 +297,9 @@ pas de gonfler les chiffres. La valeur n'est pas le volume mais l'appariement et
 annote leur <b>modalité</b> — la suite (ML) décide quoi utiliser. La propriété
 d'appariement reste mesurée (<code>paired_ok</code>), mais une donnée texte n'est plus perdue.</p>
 <div class="grid">
-  <div class="kpi"><div class="v" style="color:var(--accent)">953 730</div><div class="l">text_image — texte + image</div></div>
+  <div class="kpi"><div class="v" style="color:var(--accent)">963 414</div><div class="l">text_image — texte + image</div></div>
   <div class="kpi"><div class="v">70 719</div><div class="l">claim — verdict de fact-check</div></div>
-  <div class="kpi"><div class="v" style="color:var(--muted)">27 571</div><div class="l">text — texte seul (annoté)</div></div>
+  <div class="kpi"><div class="v" style="color:var(--muted)">28 425</div><div class="l">text — texte seul (annoté)</div></div>
 </div>
 <p class="small muted">Le passage à « conserver + annoter » a fait monter le taux de validité
 de 96,3 % à <b>98,8 %</b> : les ~28 K enregistrements texte-seul (titres FakeNewsNet, etc.)
@@ -307,10 +307,10 @@ sont désormais valides et chargés, au lieu d'être écartés.</p>
 
 <h3>Répartition globale des labels</h3>
 <div class="grid">
-  <div class="kpi"><div class="v" style="color:var(--bad)">626 379</div><div class="l">fake — 59,5 %</div></div>
-  <div class="kpi"><div class="v" style="color:var(--ok)">361 653</div><div class="l">real — 34,4 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--bad)">631 259</div><div class="l">fake — 59,4 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--ok)">367 311</div><div class="l">real — 34,6 %</div></div>
   <div class="kpi"><div class="v" style="color:var(--warn)">40 190</div><div class="l">satire — 3,8 %</div></div>
-  <div class="kpi"><div class="v" style="color:var(--muted)">23 798</div><div class="l">unverified — 2,3 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--muted)">23 798</div><div class="l">unverified — 2,2 %</div></div>
 </div>
 <p class="small muted">La satire est une <b>classe à part entière</b> (jamais fusionnée avec la
 désinformation) ; les cas limites portent un drapeau <code>ambiguous</code>. On ne confond pas
