@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 
 from checkit.config import Settings
 from checkit.corpus.claimreview import download_claimreview, load_claimreview
+from checkit.corpus.euvsdisinfo import download_euvsdisinfo, load_euvsdisinfo
 from checkit.corpus.dgm4 import download_dgm4, load_dgm4
 from checkit.corpus.fakeddit import download_fakeddit, load_fakeddit
 from checkit.corpus.fakenewsnet import download_fakenewsnet, load_fakenewsnet
@@ -27,9 +28,12 @@ def main(argv: list[str] | None = None) -> int:
                         format="%(asctime)s %(levelname)s %(name)s %(message)s")
     parser = argparse.ArgumentParser(prog="checkit.corpus")
     parser.add_argument("--dataset", required=True,
-                        choices=["fakenewsnet", "fakeddit", "dgm4", "claimreview", "webz"])
+                        choices=["fakenewsnet", "fakeddit", "dgm4", "claimreview", "webz",
+                                 "euvsdisinfo"])
     parser.add_argument("--skip-download", action="store_true",
                         help="reuse already-downloaded files")
+    parser.add_argument("--fetch-text", action="store_true",
+                        help="euvsdisinfo: fetch article text+image per URL (enrichment)")
     parser.add_argument("--screen-images", action="store_true",
                         help="measure og:image yield on a sample instead of writing JSONL")
     parser.add_argument("--sample", type=int, default=50,
@@ -39,7 +43,15 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings()
     settings.ensure_dirs()
 
-    if args.dataset == "webz":
+    if args.dataset == "euvsdisinfo":
+        if not args.skip_download:
+            download_euvsdisinfo(settings.corpora_dir)
+        records = load_euvsdisinfo(settings.corpora_dir)
+        if args.fetch_text:
+            from checkit.corpus.enrich import enrich_records
+            stats = enrich_records(records)
+            logger.info("euvsdisinfo enrichment: %s", stats)
+    elif args.dataset == "webz":
         if not args.skip_download:
             download_webz(settings.corpora_dir)
         records = load_webz(settings.corpora_dir)

@@ -105,6 +105,14 @@ def normalize_label(record: RawRecord) -> Verdict:
         return Verdict("unverified", extras.get("fine_grained_label"),
                        extras.get("label_source"), None, ambiguous=True)
 
+    if source == "euvsdisinfo":
+        # EU East StratCom analyst-curated -> high confidence (like fact-checkers)
+        cls = extras.get("class")
+        label = "real" if cls == "trustworthy" else "fake"
+        kw = (extras.get("keywords") or "").split(",")[0].strip().lower()
+        fine = f"euvsdisinfo:{kw}" if kw else f"euvsdisinfo:{cls}"
+        return Verdict(label, fine, "euvsdisinfo", 0.9)
+
     if source == "webz-fakenews":
         # SOURCE-level distant supervision (publisher flagged, content not
         # fact-checked) -> low confidence; entertainment items ambiguous

@@ -31,7 +31,7 @@ pipeline (pattern *skip-if-no-key*). Renseigner les clés dans `.env`
 
 | Service | Inscription | Usage | Variable `.env` |
 |---|---|---|---|
-| Google Fact Check Tools | <https://console.cloud.google.com/> → activer « Fact Check Tools API » → créer une clé API (gratuit) | **Requêtes ponctuelles uniquement** (`python -m checkit.factcheck_query "affirmation"`) — les CGU interdisent toute base permanente ; le script n'a volontairement aucun chemin de stockage. Seule voie conforme vers les verdicts AFP Factuel | `CHECKIT_GOOGLE_FCT_API_KEY` |
+| Google Fact Check Tools | <https://console.cloud.google.com/> → activer « Fact Check Tools API » → créer une clé API (gratuit) | **Requêtes ponctuelles uniquement** (`python -m checkit.factcheck_query "affirmation"`) — les CGU interdisent toute base permanente ; le script n'a volontairement aucun chemin de stockage. Seule voie conforme vers les verdicts AFP Factuel | `CHECKIT_GOOGLE_FCT_API_KEY` *(clé enregistrée + validée)* |
 
 ## TODO — EUvsDisinfo (téléchargement manuel depuis le Mac)
 
