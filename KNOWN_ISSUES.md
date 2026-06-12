@@ -36,12 +36,16 @@ yet (keys not registered). At first live run per provider: confirm field names,
 date formats, quota behavior, then update fixtures if reality differs.
 Pagination is single-page per run until quotas are known.
 
-## EUvsDisinfo — 403 from server IPs (2026-06-05)
+## EUvsDisinfo — RESOLVED via open mirror, not scraping (2026-06-12)
 
-euvsdisinfo.eu serves 403 to requests from the P710 (likely datacenter-IP WAF).
-The ClaimReview aggregate dump (98K verdicts incl. EU fact-checkers) covers the
-label-feed need; EUvsDisinfo retry later from another network or via their CSV
-export if a stronger pro-Kremlin-disinfo axis is wanted.
+Investigation: the earlier 403 was a UA filter (a browser UA reaches the landing
+page), but every DATA route (narrative-search wp-json API, sitemap, case pages)
+sits behind a Cloudflare managed JS challenge, and robots.txt disallows the
+search/sort/pagination params. Scraping would mean defeating anti-bot protection
++ ignoring robots — against our posture. Resolution: the full DB is published
+openly (Zenodo 10514307, CC-BY-4.0, 18,249 cases) — integrated from there and
+enriched with our own trafilatura+og:image fetch. The Zenodo snapshot is frozen;
+true daily-fresh would need the (rejected) live route.
 
 ## ClaimReview ratings — heterogeneous by design
 

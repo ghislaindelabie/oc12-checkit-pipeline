@@ -85,8 +85,8 @@ once fact-check layer lands; owner proofread before hand-in.
 
 ## Open TODOs (post-feature-complete polish)
 
-- [ ] **EUvsDisinfo**: owner downloads the CSV export from the Mac (residential IP) → drop in `/data/files/OC12/corpora/euvsdisinfo/` → loader to write (see docs/api-keys.md)
-- [ ] **Google FCT key**: owner registers (free, GCP console) → live-validate `checkit.factcheck_query` (built, fixture-tested)
+- [x] **EUvsDisinfo**: integrated via Zenodo CC-BY-4.0 open mirror (18,249 cases) + trafilatura/og:image enrichment; live scraping rejected (Cloudflare+robots)
+- [x] **Google FCT**: key registered + `factcheck_query` live-validated (returns AFP Factuel)
 - [ ] FakeNewsNet og:image enrichment job (admitted-with-rot, decision #7)
 - [ ] GDELT FR query tuning at ~1 req/30s, then enable gdelt in the daily DAG
 - [ ] Remaining 6 news-API keys → live-validate adapters

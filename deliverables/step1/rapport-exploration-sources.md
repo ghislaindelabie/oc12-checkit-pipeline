@@ -66,7 +66,8 @@ périssables. Chaque faiblesse est compensée par un autre corpus.
 | **Flux satire** (Le Gorafi, Nordpresse, The Onion) | Flux | `og:image` de la page article (repli) | XML+HTML | FR/EN | **Satire auto-déclarée** = classe à part entière | satire assumée publiquement | `feedparser` + repli `og:image` | 0 % en flux → **100 %** via repli (mesuré) |
 | **Bluesky** | API sociale | `embed.images[].fullsize` + texte (même post) | JSON | EN surtout | Aucun | CGU permissives pour la recherche — **seul réseau social vérifié conforme** | REST publique sans clé | validé (auteurs pseudonymisés) |
 | **Webz.io fake-news-dataset** | Corpus + flux hebdo | `thread.main_image` + `text` (même JSON) | ZIPs de JSON (GitHub) | EN 60%, RU 27%, ES/AR/ZH… | **Source-flaggé** (listes Wikipedia + filtre Webz) — faible, jamais un verdict | CGU Webz.io (licence de service) ; flag `ai_allow` par article respecté | Téléchargement incrémental + `zipfile` | **94 % d'appariement mesuré** ; ~106K articles (fév. 2025→) |
-| **ClaimReview / EUvsDisinfo** | Fact-checking | revendication + verdict (pas d'image systématique) | JSON/dump | FR/EN | **Verdicts de fact-checkers** | dumps ouverts ; l'API Google FCT interdit la base permanente → usage requête ponctuelle uniquement | téléchargement de dump | à intégrer |
+| **EUvsDisinfo** (miroir Zenodo CC-BY-4.0) | Corpus label + enrichi | `og:image` récupéré (45 % éch.) + texte | CSV + fetch articles | EN/RU/AR/UK… | **Analystes UE** (disinfo/trustworthy) — confiance 0,9 | CC-BY-4.0 (miroir officiel ; site live écarté : Cloudflare+robots) | CSV Zenodo + trafilatura | **18 249 cas** |
+| **ClaimReview** | Fact-checking | revendication + verdict (pas d'image systématique) | JSON/dump | FR/EN | **Verdicts de fact-checkers** | dumps ouverts ; l'API Google FCT interdit la base permanente → usage requête ponctuelle uniquement | téléchargement de dump | à intégrer |
 
 ### Fiche détaillée — Webz.io fake-news-dataset (ajout du 2026-06-05)
 
@@ -104,6 +105,40 @@ désinformation) et le filtre de confiance Webz (`trust.category:fake_news`).
   démarchage commercial — sans objet pour nous), droit israélien ; contenu
   sous responsabilité des éditeurs d'origine. Posture identique au reste du
   projet : usage de recherche non commercial, jamais de redistribution.
+
+### Fiche détaillée — EUvsDisinfo (ajout du 2026-06-12)
+
+**Ce que c'est.** Base de cas de désinformation pro-Kremlin de la *East StratCom
+Task Force* (Service européen d'action extérieure) : chaque cas associe un article
+de source pro-Kremlin à son démontage par des analystes de l'UE.
+
+**Acquisition — canal officiel, pas de scraping.** Le site `euvsdisinfo.eu` est
+protégé par un *challenge Cloudflare* (JS + cookies) et son `robots.txt` interdit
+les paramètres de recherche/tri/pagination. Conformément à notre posture (canaux
+officiels d'abord, respect de robots, pas de contournement de protection
+anti-bot — cf. art. 323-1 C. pén.), nous **ne scrapons pas** le site. La base est
+disponible ouvertement : nous utilisons le miroir **Zenodo 10514307**
+(`euvsdisinfo_base.csv`, **CC-BY-4.0**, Aleite et al., CIKM 2024), la liste
+labellisée des URLs d'articles de toute la base.
+
+**Volumes (mesurés).** 18 249 cas — 10 682 `disinformation` / 7 567 `trustworthy`.
+Langues : EN 6 546, RU 5 825, AR 3 538, UK/DE/ES…
+
+**Enrichissement texte+image.** Le fichier de base ne contient que des URLs
+labellisées ; le texte est récupéré en récupérant chaque article avec **notre
+propre pile trafilatura + og:image** (aucune dépendance DiffBot, aucune clé). Sur
+échantillon : ~65 % de texte récupéré, **45 % avec image** (rend une partie de la
+source multimodale), ~35 % de pourrissement (sites pro-Kremlin morts/géobloqués) —
+mesuré et publié comme KPI, comme pour FakeNewsNet.
+
+**Labels.** Curation par analystes UE → confiance élevée (0,9) :
+`disinformation`→`fake`, `trustworthy`→`real` ; `fine_grained_label` = thème
+(keywords). C'est notre **meilleur signal FR/UE sur les narratifs pro-Kremlin**.
+
+**Limite d'incrémentalité.** Le snapshot Zenodo est **figé** : le mécanisme
+incrémental (re-pull + chargement idempotent) est correct mais ne révèle de
+nouveaux cas qu'au rafraîchissement du miroir amont ; un flux véritablement
+quotidien exigerait le site live (écarté pour les raisons ci-dessus).
 
 ## 5. Sources écartées — et pourquoi
 

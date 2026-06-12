@@ -54,7 +54,25 @@ def checkit_factcheck_weekly():
         print(f"webz refreshed: {count} records")
         return str(path)
 
-    [refresh_claimreview(), refresh_webz()]
+    @task
+    def refresh_euvsdisinfo() -> str:
+        from checkit.config import Settings
+        from checkit.corpus.enrich import enrich_records
+        from checkit.corpus.euvsdisinfo import download_euvsdisinfo, load_euvsdisinfo
+        from checkit.storage import append_jsonl, raw_path
+
+        settings = Settings()
+        settings.ensure_dirs()
+        download_euvsdisinfo(settings.corpora_dir)  # frozen snapshot; idempotent downstream
+        records = load_euvsdisinfo(settings.corpora_dir)
+        enrich_records(records)  # fetch article text+image (rot logged)
+        path = raw_path(settings.raw_dir, "euvsdisinfo", "snapshot")
+        path.unlink(missing_ok=True)
+        count = append_jsonl(records, path)
+        print(f"euvsdisinfo refreshed: {count} cases")
+        return str(path)
+
+    [refresh_claimreview(), refresh_webz(), refresh_euvsdisinfo()]
 
 
 checkit_factcheck_weekly()

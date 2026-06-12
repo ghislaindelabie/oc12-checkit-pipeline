@@ -1,0 +1,5 @@
+debunk_id,keywords,article_id,article_publisher,article_domain,article_url,article_language,debunk_date,class
+EUVS-1,"Ukraine, NATO",a1,RT,rt.com,https://rt.com/article-1,english,15-03-2026,disinformation
+EUVS-1,"Ukraine, NATO",a2,Reuters,reuters.com,https://reuters.com/credible-1,english,15-03-2026,trustworthy
+EUVS-2,"Vaccines, COVID",a3,Sputnik,sputniknews.com,https://sputniknews.com/article-2,russian,10-02-2026,disinformation
+EUVS-3,"Élections",a4,Unknown,example.ru,,french,01-01-2026,disinformation

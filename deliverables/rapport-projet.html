@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CheckIt.AI — Rapport de projet</title>
+<style>
+  :root{
+    --bg:#0f1419; --card:#fff; --ink:#1a2230; --muted:#5b6675; --line:#e3e8ef;
+    --accent:#2563eb; --accent2:#0ea5e9; --ok:#1b8a4b; --warn:#b45309; --bad:#c0392b;
+    --soft:#f6f8fb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#eef2f7;color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px 80px}
+  header.hero{background:linear-gradient(135deg,#0f1c3f,#123a6b 55%,#0ea5e9);color:#fff;
+    padding:56px 24px 40px;margin-bottom:34px}
+  header.hero .inner{max-width:920px;margin:0 auto}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.4px}
+  header.hero p{margin:4px 0;color:#cfe0f5}
+  .badges{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+  .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+    padding:5px 11px;border-radius:999px;font-size:13px;color:#fff}
+  h2{font-size:22px;margin:38px 0 8px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h2 .n{color:var(--accent);font-variant-numeric:tabular-nums}
+  h3{font-size:17px;margin:22px 0 6px;color:#10203a}
+  p{margin:8px 0}
+  .lead{font-size:17px;color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 24px;margin:16px 0;box-shadow:0 1px 3px rgba(20,40,80,.05)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:18px 0}
+  .kpi{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .kpi .v{font-size:26px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+  .kpi .l{font-size:13px;color:var(--muted);margin-top:2px}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14.5px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--soft);font-weight:600;color:#26354d}
+  tr:hover td{background:#fafcff}
+  code{background:#eef2f7;padding:1px 6px;border-radius:5px;font-size:13.5px;
+    font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+  .tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:6px;font-weight:600}
+  .t-ok{background:#e6f5ec;color:var(--ok)} .t-warn{background:#fdf1e3;color:var(--warn)}
+  .t-info{background:#e7f0fe;color:var(--accent)}
+  .step{display:flex;gap:14px;align-items:flex-start}
+  .step .num{flex:0 0 38px;height:38px;border-radius:10px;background:var(--accent);color:#fff;
+    font-weight:700;display:flex;align-items:center;justify-content:center;font-size:18px}
+  .why{border-left:3px solid var(--accent2);background:#f2f9fe;padding:10px 14px;
+    border-radius:0 8px 8px 0;margin:10px 0;font-size:14.5px}
+  .why b{color:#0b5a86}
+  .flow{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:#0f1c3f;color:#d7e6fb;
+    padding:18px;border-radius:12px;overflow-x:auto;line-height:1.5;white-space:pre}
+  .muted{color:var(--muted)} .small{font-size:13.5px}
+  ul{margin:8px 0 8px 2px;padding-left:20px} li{margin:3px 0}
+  footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header class="hero"><div class="inner">
+  <h1>CheckIt.AI — Pipeline d'acquisition de données multimodales</h1>
+  <p>Projet de formation AI Engineer — détection de désinformation (texte + image appariés)</p>
+  <p class="small">Ghislain Delabie · rapport de projet · juin 2026</p>
+  <div class="badges">
+    <span class="badge">5 livrables</span>
+    <span class="badge">~1,02 M d'articles en base</span>
+    <span class="badge">13 sources intégrées</span>
+    <span class="badge">132 tests</span>
+    <span class="badge">Airflow 3.2 · PostgreSQL 16 · Streamlit</span>
+  </div>
+</div></header>
+
+<div class="wrap">
+
+<p class="lead">Ce rapport retrace les cinq étapes du projet : pour chacune, ce qui a été
+réalisé, le <b>raisonnement</b> derrière les choix, les outils retenus et les résultats
+mesurés. Le fil rouge : la valeur du jeu de données tient à l'<b>appariement texte↔image</b>
+et à la <b>qualité des labels</b>, pas au volume brut.</p>
+
+<div class="card">
+<h3 style="margin-top:0">Résumé exécutif</h3>
+<p>Un pipeline Python modulaire acquiert des publications multimodales depuis trois couches
+de sources (corpus annotés, agrégateurs de fact-checking, connecteurs live), les normalise
+vers un schéma commun, les charge dans une base PostgreSQL sécurisée via Apache Airflow, et
+expose des KPI sur un tableau de bord Streamlit assorti d'un plan de monitoring. Toutes les
+sources sont qualifiées sur leur <b>document de droits contraignant</b> ; les images sont
+conservées localement, jamais redistribuées.</p>
+<div class="grid">
+  <div class="kpi"><div class="v">1 023 596</div><div class="l">articles en base</div></div>
+  <div class="kpi"><div class="v">96,3 %</div><div class="l">taux de validité</div></div>
+  <div class="kpi"><div class="v">97,2 %</div><div class="l">appariement déclaré</div></div>
+  <div class="kpi"><div class="v">13</div><div class="l">sources intégrées</div></div>
+  <div class="kpi"><div class="v">132</div><div class="l">tests hermétiques</div></div>
+</div>
+</div>
+
+<h2>Architecture d'ensemble</h2>
+<p>Trois couches de sources convergent vers une chaîne unique extract → transform → load,
+orchestrée par Airflow selon trois cadences distinctes (corpus une fois, fact-checking
+hebdomadaire, flux live quotidien).</p>
+<div class="flow">Corpus annotés      DGM4 · Fakeddit · FakeNewsNet        ─┐  DAG @once
+Fact-checking       ClaimReview · EUvsDisinfo · Google FCT  ─┤  DAG @weekly
+APIs presse + RSS   GDELT · Guardian(+6) · RSS FR · satire   ─┼─ extract ─▶ JSONL (brut)
+Réseau social       Bluesky                                  ─┘  DAG @daily      │
+                                                                          transform ─▶ Parquet + index CSV
+                                                                                 │
+                                            load (idempotent) ─▶ PostgreSQL 16 sécurisé + images sur disque
+                                                                                 │
+                                          Streamlit : KPI (appariement · validité · rapidité · coût)</div>
+<p class="why"><b>Pourquoi trois couches ?</b> Les corpus annotés portent les <i>labels</i>
+(vérité terrain) ; les agrégateurs de fact-checking fournissent une source de vérité
+réutilisable ; les connecteurs live démontrent l'acquisition <i>automatisée</i> exigée par la
+mission. Chaque faiblesse d'une source est compensée par une autre.</p>
+
+<!-- ÉTAPE 1 -->
+<h2><span class="n">Étape 1</span> — Explorer et qualifier les sources</h2>
+<div class="step"><div class="num">1</div><div>
+<p><b>Objectif.</b> Identifier ≥ 3 sources multimodales pertinentes, décrire format, langue,
+qualité des labels et méthode d'extraction ; vérifier les droits d'usage.</p>
+<p><b>Réalisé.</b> 86 sources examinées sur 5 axes (modalité appariée, format, langue, qualité
+des labels, droits) ; 13 vérifiées sur pièces et intégrées. Rapport :
+<code>deliverables/step1/rapport-exploration-sources.md</code>.</p>
+<div class="why"><b>Choix structurant.</b> Juger les droits sur le <b>document contraignant</b>
+(CGU/licence/robots.txt), jamais le marketing. Cela a, par ex., disqualifié NewsData.io
+comme « usage commercial » (CGU illisibles), promu GDELT (CGU lue : usage libre + attribution),
+et écarté Telegram/Mastodon (clauses anti-collecte).</p>
+<p class="small muted"><b>Outils :</b> WebFetch/WebSearch pour la vérification des CGU,
+<code>urllib.robotparser</code>, sondes <code>requests</code> pour mesurer le taux de remplissage
+des champs image en conditions réelles.</p>
+</div></div>
+
+<!-- ÉTAPE 2 -->
+<h2><span class="n">Étape 2</span> — Scripts d'extraction automatisée</h2>
+<div class="step"><div class="num">2</div><div>
+<p><b>Objectif.</b> Scripts Python modulaires, exécutables sans intervention, sauvegardant des
+données structurées.</p>
+<p><b>Réalisé.</b> Un paquet <code>checkit/</code> où chaque source a son adaptateur derrière une
+<b>enveloppe commune</b> ; 7 adaptateurs d'APIs presse déclaratifs ; sonde RSS ; client Bluesky ;
+téléchargeurs de corpus. CLI unique : <code>python -m checkit.extract --source &lt;nom&gt;</code>.</p>
+<div class="why"><b>Conception.</b> Fonctions <i>pures</i> (connexion / parsing / nettoyage /
+sauvegarde) sans dépendance à Airflow → l'étape 4 les enveloppe sans refactor. Régulation de
+débit partagée par clé (GDELT 5,5 s = limite énoncée par l'API, etc., cf.
+<code>docs/rate-limits.md</code>). Motif <i>skip-if-no-key</i> : une source sans clé est ignorée,
+jamais une erreur. Appariement vérifié <b>avant</b> écriture (image téléchargeable + valide).</p>
+<p class="small muted"><b>Outils :</b> <code>requests</code>+<code>tenacity</code>,
+<code>feedparser</code>, <code>BeautifulSoup</code>/<code>trafilatura</code>,
+<code>Pillow</code>+<code>imagehash</code>, <code>pydantic-settings</code> (secrets via
+<code>SecretStr</code>), logs JSON, <code>pytest</code>+<code>responses</code>.</p>
+</div></div>
+
+<!-- ÉTAPE 3 -->
+<h2><span class="n">Étape 3</span> — Pipeline de transformation + schéma conceptuel</h2>
+<div class="step"><div class="num">3</div><div>
+<p><b>Objectif.</b> Transformer le brut en jeu exploitable (nettoyage, normalisation, mapping),
+de façon reproductible et journalisée ; documenter par un schéma conceptuel.</p>
+<p><b>Réalisé.</b> Étapes <b>lecture / traitement / export</b> : nettoyage de texte,
+normalisation des labels de 6 taxonomies vers <code>{real, fake, satire, unverified}</code>,
+qualification de l'appariement, déduplication, export Parquet + index CSV, et un
+<b>RunReport JSON</b> (les KPI consommés ensuite). Schéma conceptuel Mermaid
+(<code>docs/conceptual_schema.md</code>), distinct du modèle physique.</p>
+<div class="why"><b>Brut = fidélité, transformé = interprétation.</b> Les entiers de label
+Fakeddit ont été <b>calés empiriquement</b> (croisement subreddit↔label sur 680 K lignes,
+zéro bruit). L'exécution complète a révélé deux bugs d'identité (DGM4, ClaimReview), corrigés
+avec tests de non-régression — la déduplication DGM4 retombe alors <b>exactement</b> sur les
+230 000 échantillons canoniques du papier (preuve d'intégrité).</p>
+<p class="small muted"><b>Outils :</b> <code>pandas 2.2</code>+<code>pyarrow</code> (lisibilité &gt;
+polars à cette échelle), Parquet (typé, colonnaire, prêt ML), Mermaid. Format :
+JSONL (brut) → Parquet + index CSV (propre).</p>
+</div></div>
+
+<!-- ÉTAPE 4 -->
+<h2><span class="n">Étape 4</span> — Orchestration Airflow → base sécurisée</h2>
+<div class="step"><div class="num">4</div><div>
+<p><b>Objectif.</b> Flux ETL Airflow avec tâches distinctes, chargement dans une base SQL/NoSQL
+adaptée et sécurisée, exécutable en local.</p>
+<p><b>Réalisé.</b> Trois DAGs (Astro CLI, Airflow 3.2) aux tâches minces qui délèguent au paquet
+testé ; XCom ne transporte que des chemins. PostgreSQL 16 (conteneur dédié). Chargement
+<b>idempotent</b> (<code>ON CONFLICT DO NOTHING</code>) avec porte de qualité (abandon si
+validité &lt; 50 %). Preuves : <code>deliverables/step4/preuves-execution.md</code>.</p>
+<div class="why"><b>SQL plutôt que NoSQL :</b> problème relationnel (contrainte d'unicité = dédup
++ KPI doublons gratuits, jointure propre vers les métriques). <b>Sécurité (3 axes du brief) :</b>
+authentification <code>scram-sha-256</code>, rôles à moindre privilège
+(<code>etl_writer</code>/<code>dashboard_reader</code>), chiffrement <code>pgcrypto</code>.
+<b>Robustesse prouvée en réel :</b> un échec de permission a été absorbé par
+<code>retries=3</code> (la tâche a réussi à la tentative suivante).</p>
+<p class="small muted"><b>Outils :</b> Apache Airflow 3.2 (Astro CLI/Docker), PostgreSQL 16,
+<code>psycopg3</code>. Preuve d'idempotence : 978 289 lignes insérées, puis re-run = 0 insérée /
+978 289 ignorées.</p>
+</div></div>
+
+<!-- ÉTAPE 5 -->
+<h2><span class="n">Étape 5</span> — KPI, tableau de bord & monitoring</h2>
+<div class="step"><div class="num">5</div><div>
+<p><b>Objectif.</b> Définir des KPI (précision, rapidité, coût), un tableau de bord lisible par
+un public non technique, et un plan de monitoring cohérent avec les automatisations.</p>
+<p><b>Réalisé.</b> Tableau de bord Streamlit (FR) : cartes KPI, répartition des labels, volumes
+par source, qualité au fil des exécutions avec le seuil d'arrêt tracé ; lecture en
+<b>rôle lecture seule</b>, cache 5 min, garde-fous base éteinte / aucune exécution. Plan de
+monitoring (<code>docs/plan-monitoring.md</code>).</p>
+<div class="why"><b>Honnêteté du plan.</b> Chaque seuil est étiqueté <span class="tag t-ok">Appliqué</span>
+(dans le code : porte qualité, retries, timeout), <span class="tag t-info">Observé</span>
+(affiché) ou <span class="tag t-warn">Non câblé</span> (stub d'alerte documenté) — rien n'est
+promis que le code ne fasse réellement.</p>
+<p class="small muted"><b>Outils :</b> Streamlit 1.58 (<code>st.metric</code>, <code>st.connection</code>),
+Plotly. La logique KPI vit dans un module sans UI → testée unitairement.</p>
+</div></div>
+
+<h2>Sources de données intégrées</h2>
+<table>
+<tr><th>Source</th><th>Type</th><th>Rôle</th><th>Labels (provenance)</th><th>Droits</th></tr>
+<tr><td><b>DGM4</b></td><td>Corpus (230 000)</td><td>image+texte appariés, manipulations localisées</td><td>Exacts, synthétiques (conf. 1,0)</td><td>S-Lab 1.0 (recherche)</td></tr>
+<tr><td><b>Fakeddit</b></td><td>Corpus (680 798)</td><td>plus grand corpus multimodal</td><td>Supervision distante (0,6)</td><td>Usage recherche</td></tr>
+<tr><td><b>FakeNewsNet</b></td><td>Corpus (23 196)</td><td>labels fact-checkers humains</td><td>PolitiFact/GossipCop (0,9)</td><td>Métadonnées publiques</td></tr>
+<tr><td><b>ClaimReview</b></td><td>Fact-check (98 455)</td><td>verdicts mondiaux + URLs de jonction</td><td>Fact-checkers IFCN (0,9)</td><td>Dump DataCommons</td></tr>
+<tr><td><b>EUvsDisinfo</b></td><td>Fact-check (18 249)</td><td>narratifs pro-Kremlin FR/UE</td><td>Analystes UE (0,9)</td><td>Miroir Zenodo CC-BY-4.0</td></tr>
+<tr><td><b>Webz fake-news</b></td><td>Live fake (84 311)</td><td>seule source live côté « fake »</td><td>Site flaggé (0,5)</td><td>CGU Webz (recherche)</td></tr>
+<tr><td><b>GDELT DOC 2.0</b></td><td>API live</td><td>flux multilingue + image</td><td>—</td><td>Usage libre + attribution</td></tr>
+<tr><td><b>The Guardian</b></td><td>API live</td><td>presse anglophone + vignette</td><td>—</td><td>Open Platform (clé)</td></tr>
+<tr><td>+6 APIs presse</td><td>API live</td><td>NewsData, GNews, Currents…</td><td>—</td><td>Offres gratuites (clés)</td></tr>
+<tr><td><b>RSS FR + satire</b></td><td>Flux</td><td>presse FR + classe satire dédiée</td><td>Satire auto-déclarée (0,95)</td><td>Flux publics</td></tr>
+<tr><td><b>Bluesky</b></td><td>API sociale</td><td>posts image+texte, auteurs pseudonymisés</td><td>—</td><td>API publique</td></tr>
+<tr><td><b>Google FCT</b></td><td>API requête</td><td>verdicts AFP &amp; co. (sans stockage)</td><td>Fact-checkers (requête)</td><td>Requête ponctuelle uniquement</td></tr>
+</table>
+<p class="why"><b>EUvsDisinfo — décision de méthode.</b> Le site live est protégé par un challenge
+Cloudflare et son robots.txt interdit la recherche/pagination. Plutôt que de contourner une
+protection anti-bot (contraire à notre posture et au droit), nous avons utilisé le
+<b>miroir ouvert officiel</b> (Zenodo, CC-BY-4.0) puis enrichi le texte/image avec notre propre
+pile — un meilleur choix sur tous les plans (légal, reproductibilité, effort).</p>
+
+<h2>L'enveloppe commune <code>RawRecord</code></h2>
+<p>Chaque source parle un dialecte différent (GDELT dit <code>socialimage</code>, NewsData dit
+<code>image_url</code>…). Chaque adaptateur traduit vers une <b>enveloppe unique</b> validée à
+l'entrée (Pydantic), ce qui permet une seule chaîne de transformation pour les 13 sources.</p>
+<ul class="small">
+<li><b>Identité déterministe</b> (<code>record_id</code> = UUID5 du contenu) → chargements idempotents.</li>
+<li><b>Champs standardisés</b> : titre, texte, légende, <code>image_url</code>, langue, date (UTC), domaine, provenance.</li>
+<li><b><code>extras</code></b> : tout le spécifique source conservé intact (labels bruts, grounding…) — interprété seulement à l'étape 3.</li>
+<li><b>RGPD</b> : identifiants d'auteurs sociaux pseudonymisés (hash salé), jamais en clair.</li>
+</ul>
+
+<h2>Décomposition des données</h2>
+<p>Chiffres au niveau des <b>enregistrements distincts et valides chargés en base</b> (après
+déduplication). Les compteurs bruts d'extraction sont plus élevés : la transformation retire les
+doublons (même article re-collecté, drops hebdomadaires Webz qui se recouvrent, etc.).</p>
+
+<h3>Par source</h3>
+<table>
+<tr><th>Source</th><th>Type</th><th style="text-align:right">En base</th>
+    <th style="text-align:right">fake</th><th style="text-align:right">real</th>
+    <th style="text-align:right">satire</th><th style="text-align:right">non vérifié</th>
+    <th style="text-align:right">appariées*</th></tr>
+<tr><td>Fakeddit</td><td>corpus</td><td style="text-align:right">677 491</td><td style="text-align:right">371 033</td><td style="text-align:right">266 458</td><td style="text-align:right">40 000</td><td style="text-align:right">—</td><td style="text-align:right">déclarées</td></tr>
+<tr><td>DGM4</td><td>corpus</td><td style="text-align:right">230 000</td><td style="text-align:right">152 574</td><td style="text-align:right">77 426</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">230 000</td></tr>
+<tr><td>ClaimReview</td><td>fact-check</td><td style="text-align:right">70 667</td><td style="text-align:right">46 030</td><td style="text-align:right">1 384</td><td style="text-align:right">94</td><td style="text-align:right">23 159</td><td style="text-align:right">n/a</td></tr>
+<tr><td>Webz fake-news</td><td>live fake</td><td style="text-align:right">44 712</td><td style="text-align:right">44 712</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">déclarées</td></tr>
+<tr><td>RSS France Info</td><td>flux</td><td style="text-align:right">239</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">239</td><td style="text-align:right">239</td></tr>
+<tr><td>RSS 20 Minutes</td><td>flux</td><td style="text-align:right">200</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">200</td><td style="text-align:right">200</td></tr>
+<tr><td>RSS Le Figaro</td><td>flux</td><td style="text-align:right">157</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">157</td><td style="text-align:right">157</td></tr>
+<tr><td>RSS The Onion</td><td>flux satire</td><td style="text-align:right">52</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">52</td><td style="text-align:right">—</td><td style="text-align:right">52</td></tr>
+<tr><td>RSS Le Gorafi</td><td>flux satire</td><td style="text-align:right">34</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">34</td><td style="text-align:right">—</td><td style="text-align:right">34</td></tr>
+<tr><td>RSS Nordpresse</td><td>flux satire</td><td style="text-align:right">9</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">9</td><td style="text-align:right">—</td><td style="text-align:right">9</td></tr>
+<tr><td>The Guardian</td><td>API presse</td><td style="text-align:right">31</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">31</td><td style="text-align:right">31</td></tr>
+<tr><td>Bluesky</td><td>réseau social</td><td style="text-align:right">4</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">4</td><td style="text-align:right">4</td></tr>
+<tr style="font-weight:700;background:#eef4ff"><td>Total</td><td>—</td><td style="text-align:right">1 023 596</td><td style="text-align:right">614 349</td><td style="text-align:right">345 268</td><td style="text-align:right">40 189</td><td style="text-align:right">23 790</td><td style="text-align:right">~230 700</td></tr>
+</table>
+<p class="small muted">*<b>Appariées (strict)</b> = image effectivement téléchargée + validée (Pillow),
+ou fournie avec le corpus (DGM4). Les corpus dont l'image est une URL non encore téléchargée
+sont comptés « déclarés » (appariement déclaré global : 97,2 %). « n/a » pour ClaimReview
+(source de labels, non multimodale par nature).</p>
+
+<h3>Par type de source</h3>
+<table>
+<tr><th>Type</th><th style="text-align:right">En base</th><th style="text-align:right">Part</th><th>Rôle</th></tr>
+<tr><td>Corpus annotés (DGM4, Fakeddit)</td><td style="text-align:right">907 491</td><td style="text-align:right">88,7 %</td><td>charge utile d'entraînement + labels</td></tr>
+<tr><td>Fact-checking (ClaimReview)</td><td style="text-align:right">70 667</td><td style="text-align:right">6,9 %</td><td>verdicts + jonction</td></tr>
+<tr><td>Flux live « fake » (Webz)</td><td style="text-align:right">44 712</td><td style="text-align:right">4,4 %</td><td>seule source live côté fake</td></tr>
+<tr><td>Flux RSS (presse FR + satire)</td><td style="text-align:right">691</td><td style="text-align:right">0,07 %</td><td>ingestion FR + classe satire</td></tr>
+<tr><td>APIs presse (Guardian)</td><td style="text-align:right">31</td><td style="text-align:right">&lt;0,01 %</td><td>démonstration API à clé</td></tr>
+<tr><td>Réseau social (Bluesky)</td><td style="text-align:right">4</td><td style="text-align:right">&lt;0,01 %</td><td>posts image+texte pseudonymisés</td></tr>
+</table>
+<p class="why"><b>Lecture.</b> Le volume vient des <b>corpus annotés</b> (≈ 89 %) — c'est attendu :
+ils portent la vérité terrain pour l'entraînement. Les connecteurs live sont peu volumineux par
+construction (une fenêtre quotidienne) ; leur rôle est de <b>démontrer l'acquisition automatisée</b>,
+pas de gonfler les chiffres. La valeur n'est pas le volume mais l'appariement et la qualité des labels.</p>
+
+<h3>En cours d'intégration (non encore en base)</h3>
+<table>
+<tr><th>Source</th><th style="text-align:right">Cas chargés (couche brute)</th><th>Statut</th></tr>
+<tr><td>FakeNewsNet</td><td style="text-align:right">23 196</td><td>labels fact-checkers ; appariement image en attente d'enrichissement <code>og:image</code> (criblage : 47 % résolubles)</td></tr>
+<tr><td>EUvsDisinfo</td><td style="text-align:right">18 249</td><td>cas labellisés ; enrichissement texte+image en cours (échantillon : 65 % texte, 45 % image)</td></tr>
+<tr><td>Google Fact Check Tools</td><td style="text-align:right">—</td><td>requête ponctuelle, <b>jamais stocké</b> (conformité CGU)</td></tr>
+</table>
+
+<h3>Répartition globale des labels</h3>
+<div class="grid">
+  <div class="kpi"><div class="v" style="color:var(--bad)">614 349</div><div class="l">fake — 60,0 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--ok)">345 268</div><div class="l">real — 33,7 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--warn)">40 189</div><div class="l">satire — 3,9 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--muted)">23 790</div><div class="l">unverified — 2,3 %</div></div>
+</div>
+<p class="small muted">La satire est une <b>classe à part entière</b> (jamais fusionnée avec la
+désinformation) ; les cas limites portent un drapeau <code>ambiguous</code>. On ne confond pas
+opinion controversée et désinformation : seules les affirmations factuelles vérifiables reçoivent
+un label de véracité.</p>
+
+<h2>Qualité &amp; méthode de travail</h2>
+<ul>
+<li><b>TDD systématique</b> — 132 tests hermétiques (&lt; 10 s, zéro réseau) ; chaque étape gated par les tests.</li>
+<li><b>Validation live après chaque composant</b> — a révélé 6+ pièges qu'un test unitaire ne voit pas
+(flux satire sans image en flux → repli <code>og:image</code>, vrai throttle GDELT, comportement WAF
+Bluesky, limite de champ CSV Fakeddit, identités DGM4/ClaimReview, binding réseau de la base).</li>
+<li><b>Git discipliné</b> — branches de fonctionnalité + PR, commits conventionnels.</li>
+<li><b>Données volumineuses hors dépôt</b> — tout sur le disque secondaire <code>/data/files/OC12</code>.</li>
+</ul>
+
+<h2>Conformité &amp; droits</h2>
+<ul class="small">
+<li>Droits jugés sur le <b>document contraignant</b> ; canaux officiels d'abord ; scraping en dernier recours.</li>
+<li>Images conservées localement (chemin + SHA-256 + pHash), <b>jamais redistribuées</b>.</li>
+<li>Régulation de débit par clé/domaine alignée sur les limites énoncées (<code>docs/rate-limits.md</code>).</li>
+<li>Secrets en <code>.env</code> non versionné ; colonne sensible chiffrée (<code>pgcrypto</code>).</li>
+<li>EUvsDisinfo : refus explicite de contourner Cloudflare/robots → miroir ouvert officiel.</li>
+</ul>
+
+<h2>Ce qui reste</h2>
+<p class="small">Tous les livrables existent et fonctionnent. Restent des finitions :
+captures d'écran de l'UI Airflow (pour la preuve d'exécution), enrichissement image complet de
+FakeNewsNet, réglage fin de la requête FR de GDELT, et l'enregistrement des clés d'APIs presse
+restantes (le pipeline tourne déjà sans elles).</p>
+
+<footer>
+CheckIt.AI — pipeline d'acquisition de données multimodales · rapport généré en juin 2026.<br>
+Code : <a href="https://github.com/ghislaindelabie/oc12-checkit-pipeline">github.com/ghislaindelabie/oc12-checkit-pipeline</a> ·
+Documents de référence dans <code>research/</code>, <code>docs/</code> et <code>deliverables/</code>.
+</footer>
+
+</div>
+</body>
+</html>

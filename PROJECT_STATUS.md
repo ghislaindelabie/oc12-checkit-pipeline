@@ -51,6 +51,8 @@ monitoring plan. Five graded deliverables, one per mission step.
 | ClaimReview aggregate dump (DataCommons) | ✅ **live: 98,455 verdicts** from IFCN fact-checkers worldwide, with appearance-URL join surface; ratings kept raw (multilingual). Malformed-date fix |
 | EUvsDisinfo | ⏸ 403 from server IPs (KNOWN_ISSUES) — ClaimReview covers the need |
 | Webz.io fake-news-dataset (added 2026-06-05 on owner's request) | ✅ qualified + integrated: the only LIVE fake-side source (weekly drops, 94% measured image pairing, ~106K articles since Feb 2025); source-level label at confidence 0.5, ai_allow opt-outs respected, trust.bias never used as label. Full fiche in the Step 1 report |
+| EUvsDisinfo (added 2026-06-12 on owner's request) | ✅ integrated via OPEN MIRROR not scraping: live site is Cloudflare-challenged + robots-restricted → used Zenodo CC-BY-4.0 base (18,249 cases: 10,682 disinfo / 7,567 trustworthy), enriched with our trafilatura+og:image stack (sample: 65% text, 45% image). EU-analyst labels at confidence 0.9 — the FR/EU pro-Kremlin narrative signal. Weekly DAG task added |
+| Google Fact Check Tools (query-only) | ✅ `factcheck_query` client live-validated (key registered): returns AFP Factuel + others; compliance-by-design (no storage). The query-only route to French verdicts the ClaimReview dump lacks |
 
 ### Phase 4 — Transform pipeline (2026-06-05) ✅
 
