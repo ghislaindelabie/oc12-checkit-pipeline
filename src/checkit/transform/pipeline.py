@@ -86,14 +86,23 @@ def transform_record(record: RawRecord, image_mode: str, images_dir: Path) -> Cl
     else:
         basis = "none"
 
-    paired = basis in ("validated", "bundled", "declared")
     is_label_feed = record.raw_source == "claimreview"
-    if not paired and not is_label_feed:
-        errors.append("not-paired")
+    has_image = basis != "none"
+    # Option B — keep all, annotate. Modality records WHAT we have rather than
+    # dropping text-only content: the downstream ML decides what to use.
+    if is_label_feed:
+        modality = "claim"
+    elif has_image:
+        modality = "text_image"
+    else:
+        modality = "text"
 
-    # a content record must have a headline and a pairing; a label-feed record
-    # (claimreview) must have a headline (the claim) and a verdict url
-    valid = bool(headline) and (paired or (is_label_feed and record.url is not None))
+    # Valid = carries usable content: a non-empty headline (content) or a
+    # claim + verdict url (label feed). Absence of an image is NO LONGER an
+    # invalidity reason — it is captured by modality='text' / paired_ok=False.
+    if is_label_feed and record.url is None:
+        errors.append("missing-verdict-url")
+    valid = bool(headline) and not (is_label_feed and record.url is None)
 
     return CleanRecord(
         record_id=record.record_id,
@@ -109,6 +118,7 @@ def transform_record(record: RawRecord, image_mode: str, images_dir: Path) -> Cl
         image_phash=image_phash,
         paired_ok=basis in ("validated", "bundled"),
         pairing_basis=basis,
+        modality=modality,
         label=verdict.label,
         fine_grained_label=verdict.fine_grained,
         label_source=verdict.source,
@@ -157,7 +167,7 @@ def export(records: list[CleanRecord], out_dir: Path) -> dict:
 
     index_path = out_dir / "dataset_index.csv"
     index_cols = ["record_id", "raw_source", "label", "fine_grained_label",
-                  "paired_ok", "pairing_basis", "language", "is_valid"]
+                  "paired_ok", "pairing_basis", "modality", "language", "is_valid"]
     index = frame[index_cols].copy()
     index["headline"] = frame["headline"].str.slice(0, 80)
     index.to_csv(index_path, index=False)
@@ -176,10 +186,13 @@ def run_report(records: list[CleanRecord], dup_stats: dict, exported: dict,
         stats["paired_strict"] += int(record.paired_ok)
         stats["paired_declared"] += int(record.pairing_basis != "none")
         stats[f"label:{record.label}"] += 1
+        stats[f"modality:{record.modality}"] += 1
     content = [r for r in records if r.raw_source != "claimreview"]
+    modality_counts = Counter(r.modality for r in records)
     report = {
         "rows": exported["rows"],
         "valid_rate": round(sum(r.is_valid for r in records) / max(len(records), 1), 4),
+        "modality": dict(modality_counts),
         "pairing_rate_strict": round(sum(r.paired_ok for r in content) / max(len(content), 1), 4),
         "pairing_rate_declared": round(
             sum(r.pairing_basis != "none" for r in content) / max(len(content), 1), 4),

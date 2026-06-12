@@ -66,6 +66,7 @@ def test_end_to_end_no_network(tmp_path):
     assert rss_news.headline == "Une annonce & choc"  # cleaned
     assert rss_news.label == "unverified"
     assert rss_news.pairing_basis == "declared"  # image_mode=none -> not validated
+    assert rss_news.modality == "text_image"     # has an image URL
 
     satire = frame[frame.raw_source == "rss:legorafi"].iloc[0]
     assert satire.label == "satire"
@@ -73,14 +74,20 @@ def test_end_to_end_no_network(tmp_path):
     dgm4 = frame[frame.raw_source == "dgm4"].iloc[0]
     assert dgm4.pairing_basis == "bundled"
     assert bool(dgm4.paired_ok) is True
+    assert dgm4.modality == "text_image"
 
+    # Option B: a content record without an image is KEPT as modality=text,
+    # valid, paired_ok=False — no longer dropped as "not-paired"
     fnn = frame[frame.raw_source == "fakenewsnet"].iloc[0]
     assert fnn.pairing_basis == "none"
-    assert bool(fnn.is_valid) is False  # content record without pairing
-    assert "not-paired" in list(fnn.validation_errors)
+    assert fnn.modality == "text"
+    assert bool(fnn.paired_ok) is False
+    assert bool(fnn.is_valid) is True
+    assert "not-paired" not in list(fnn.validation_errors)
 
     claim = frame[frame.raw_source == "claimreview"].iloc[0]
     assert claim.label == "fake"
+    assert claim.modality == "claim"
     assert bool(claim.is_valid) is True  # label feed: no pairing required
 
     # outputs exist
@@ -88,6 +95,8 @@ def test_end_to_end_no_network(tmp_path):
     report_disk = json.loads((tmp_path / "out" / "run_report.json").read_text())
     assert report_disk["rows"] == 5
     assert "rss:legorafi" in report_disk["per_source"]
+    assert report_disk["modality"]["text"] == 1       # the fakenewsnet record
+    assert report_disk["modality"]["claim"] == 1       # claimreview
 
 
 def test_pairing_rates_exclude_label_feed(tmp_path):

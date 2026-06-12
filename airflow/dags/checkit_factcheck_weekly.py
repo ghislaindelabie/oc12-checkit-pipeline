@@ -54,25 +54,12 @@ def checkit_factcheck_weekly():
         print(f"webz refreshed: {count} records")
         return str(path)
 
-    @task
-    def refresh_euvsdisinfo() -> str:
-        from checkit.config import Settings
-        from checkit.corpus.enrich import enrich_records
-        from checkit.corpus.euvsdisinfo import download_euvsdisinfo, load_euvsdisinfo
-        from checkit.storage import append_jsonl, raw_path
+    # NB: EUvsDisinfo is deliberately NOT here. Its Zenodo mirror is a FROZEN
+    # snapshot, so weekly re-enrichment of all 18K article URLs gains nothing and
+    # would exceed dagrun_timeout. Its full text+image enrichment is a one-time
+    # backfill run manually:  python -m checkit.corpus --dataset euvsdisinfo --fetch-text
 
-        settings = Settings()
-        settings.ensure_dirs()
-        download_euvsdisinfo(settings.corpora_dir)  # frozen snapshot; idempotent downstream
-        records = load_euvsdisinfo(settings.corpora_dir)
-        enrich_records(records)  # fetch article text+image (rot logged)
-        path = raw_path(settings.raw_dir, "euvsdisinfo", "snapshot")
-        path.unlink(missing_ok=True)
-        count = append_jsonl(records, path)
-        print(f"euvsdisinfo refreshed: {count} cases")
-        return str(path)
-
-    [refresh_claimreview(), refresh_webz(), refresh_euvsdisinfo()]
+    [refresh_claimreview(), refresh_webz()]
 
 
 checkit_factcheck_weekly()
