@@ -19,6 +19,10 @@ CREATE TABLE IF NOT EXISTS articles (
     paired_ok          boolean     NOT NULL,
     pairing_basis      text        NOT NULL CHECK (pairing_basis IN
                                    ('validated', 'bundled', 'declared', 'none')),
+    -- Option B: keep all records, annotate modality (text_image | text | claim)
+    -- rather than dropping text-only content
+    modality           text        NOT NULL DEFAULT 'text' CHECK (modality IN
+                                   ('text_image', 'text', 'claim')),
     label              text        NOT NULL CHECK (label IN
                                    ('real', 'fake', 'satire', 'unverified')),
     fine_grained_label text,

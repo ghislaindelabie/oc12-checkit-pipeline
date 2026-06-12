@@ -20,13 +20,13 @@ INSERT_ARTICLE = """
 INSERT INTO articles (
     record_id, raw_source, headline, body_text, caption, url, source_domain,
     image_url, local_image_path, image_hash, image_phash, paired_ok,
-    pairing_basis, label, fine_grained_label, label_source, label_confidence,
+    pairing_basis, modality, label, fine_grained_label, label_source, label_confidence,
     ambiguous, language, publish_date, crawl_date, raw_source_id,
     text_fingerprint, author_pseudo_enc, is_valid, validation_errors
 ) VALUES (
     %(record_id)s, %(raw_source)s, %(headline)s, %(body_text)s, %(caption)s,
     %(url)s, %(source_domain)s, %(image_url)s, %(local_image_path)s,
-    %(image_hash)s, %(image_phash)s, %(paired_ok)s, %(pairing_basis)s,
+    %(image_hash)s, %(image_phash)s, %(paired_ok)s, %(pairing_basis)s, %(modality)s,
     %(label)s, %(fine_grained_label)s, %(label_source)s, %(label_confidence)s,
     %(ambiguous)s, %(language)s, %(publish_date)s, %(crawl_date)s,
     %(raw_source_id)s, %(text_fingerprint)s,
