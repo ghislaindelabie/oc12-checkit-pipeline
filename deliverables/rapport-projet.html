@@ -238,12 +238,65 @@ l'entrée (Pydantic), ce qui permet une seule chaîne de transformation pour les
 <li><b>RGPD</b> : identifiants d'auteurs sociaux pseudonymisés (hash salé), jamais en clair.</li>
 </ul>
 
-<h2>Répartition des labels en base</h2>
+<h2>Décomposition des données</h2>
+<p>Chiffres au niveau des <b>enregistrements distincts et valides chargés en base</b> (après
+déduplication). Les compteurs bruts d'extraction sont plus élevés : la transformation retire les
+doublons (même article re-collecté, drops hebdomadaires Webz qui se recouvrent, etc.).</p>
+
+<h3>Par source</h3>
+<table>
+<tr><th>Source</th><th>Type</th><th style="text-align:right">En base</th>
+    <th style="text-align:right">fake</th><th style="text-align:right">real</th>
+    <th style="text-align:right">satire</th><th style="text-align:right">non vérifié</th>
+    <th style="text-align:right">appariées*</th></tr>
+<tr><td>Fakeddit</td><td>corpus</td><td style="text-align:right">677 491</td><td style="text-align:right">371 033</td><td style="text-align:right">266 458</td><td style="text-align:right">40 000</td><td style="text-align:right">—</td><td style="text-align:right">déclarées</td></tr>
+<tr><td>DGM4</td><td>corpus</td><td style="text-align:right">230 000</td><td style="text-align:right">152 574</td><td style="text-align:right">77 426</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">230 000</td></tr>
+<tr><td>ClaimReview</td><td>fact-check</td><td style="text-align:right">70 667</td><td style="text-align:right">46 030</td><td style="text-align:right">1 384</td><td style="text-align:right">94</td><td style="text-align:right">23 159</td><td style="text-align:right">n/a</td></tr>
+<tr><td>Webz fake-news</td><td>live fake</td><td style="text-align:right">44 712</td><td style="text-align:right">44 712</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">déclarées</td></tr>
+<tr><td>RSS France Info</td><td>flux</td><td style="text-align:right">239</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">239</td><td style="text-align:right">239</td></tr>
+<tr><td>RSS 20 Minutes</td><td>flux</td><td style="text-align:right">200</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">200</td><td style="text-align:right">200</td></tr>
+<tr><td>RSS Le Figaro</td><td>flux</td><td style="text-align:right">157</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">157</td><td style="text-align:right">157</td></tr>
+<tr><td>RSS The Onion</td><td>flux satire</td><td style="text-align:right">52</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">52</td><td style="text-align:right">—</td><td style="text-align:right">52</td></tr>
+<tr><td>RSS Le Gorafi</td><td>flux satire</td><td style="text-align:right">34</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">34</td><td style="text-align:right">—</td><td style="text-align:right">34</td></tr>
+<tr><td>RSS Nordpresse</td><td>flux satire</td><td style="text-align:right">9</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">9</td><td style="text-align:right">—</td><td style="text-align:right">9</td></tr>
+<tr><td>The Guardian</td><td>API presse</td><td style="text-align:right">31</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">31</td><td style="text-align:right">31</td></tr>
+<tr><td>Bluesky</td><td>réseau social</td><td style="text-align:right">4</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">4</td><td style="text-align:right">4</td></tr>
+<tr style="font-weight:700;background:#eef4ff"><td>Total</td><td>—</td><td style="text-align:right">1 023 596</td><td style="text-align:right">614 349</td><td style="text-align:right">345 268</td><td style="text-align:right">40 189</td><td style="text-align:right">23 790</td><td style="text-align:right">~230 700</td></tr>
+</table>
+<p class="small muted">*<b>Appariées (strict)</b> = image effectivement téléchargée + validée (Pillow),
+ou fournie avec le corpus (DGM4). Les corpus dont l'image est une URL non encore téléchargée
+sont comptés « déclarés » (appariement déclaré global : 97,2 %). « n/a » pour ClaimReview
+(source de labels, non multimodale par nature).</p>
+
+<h3>Par type de source</h3>
+<table>
+<tr><th>Type</th><th style="text-align:right">En base</th><th style="text-align:right">Part</th><th>Rôle</th></tr>
+<tr><td>Corpus annotés (DGM4, Fakeddit)</td><td style="text-align:right">907 491</td><td style="text-align:right">88,7 %</td><td>charge utile d'entraînement + labels</td></tr>
+<tr><td>Fact-checking (ClaimReview)</td><td style="text-align:right">70 667</td><td style="text-align:right">6,9 %</td><td>verdicts + jonction</td></tr>
+<tr><td>Flux live « fake » (Webz)</td><td style="text-align:right">44 712</td><td style="text-align:right">4,4 %</td><td>seule source live côté fake</td></tr>
+<tr><td>Flux RSS (presse FR + satire)</td><td style="text-align:right">691</td><td style="text-align:right">0,07 %</td><td>ingestion FR + classe satire</td></tr>
+<tr><td>APIs presse (Guardian)</td><td style="text-align:right">31</td><td style="text-align:right">&lt;0,01 %</td><td>démonstration API à clé</td></tr>
+<tr><td>Réseau social (Bluesky)</td><td style="text-align:right">4</td><td style="text-align:right">&lt;0,01 %</td><td>posts image+texte pseudonymisés</td></tr>
+</table>
+<p class="why"><b>Lecture.</b> Le volume vient des <b>corpus annotés</b> (≈ 89 %) — c'est attendu :
+ils portent la vérité terrain pour l'entraînement. Les connecteurs live sont peu volumineux par
+construction (une fenêtre quotidienne) ; leur rôle est de <b>démontrer l'acquisition automatisée</b>,
+pas de gonfler les chiffres. La valeur n'est pas le volume mais l'appariement et la qualité des labels.</p>
+
+<h3>En cours d'intégration (non encore en base)</h3>
+<table>
+<tr><th>Source</th><th style="text-align:right">Cas chargés (couche brute)</th><th>Statut</th></tr>
+<tr><td>FakeNewsNet</td><td style="text-align:right">23 196</td><td>labels fact-checkers ; appariement image en attente d'enrichissement <code>og:image</code> (criblage : 47 % résolubles)</td></tr>
+<tr><td>EUvsDisinfo</td><td style="text-align:right">18 249</td><td>cas labellisés ; enrichissement texte+image en cours (échantillon : 65 % texte, 45 % image)</td></tr>
+<tr><td>Google Fact Check Tools</td><td style="text-align:right">—</td><td>requête ponctuelle, <b>jamais stocké</b> (conformité CGU)</td></tr>
+</table>
+
+<h3>Répartition globale des labels</h3>
 <div class="grid">
-  <div class="kpi"><div class="v" style="color:var(--bad)">614 349</div><div class="l">fake (désinformation)</div></div>
-  <div class="kpi"><div class="v" style="color:var(--ok)">345 268</div><div class="l">real (authentique)</div></div>
-  <div class="kpi"><div class="v" style="color:var(--warn)">40 189</div><div class="l">satire</div></div>
-  <div class="kpi"><div class="v" style="color:var(--muted)">23 790</div><div class="l">unverified</div></div>
+  <div class="kpi"><div class="v" style="color:var(--bad)">614 349</div><div class="l">fake — 60,0 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--ok)">345 268</div><div class="l">real — 33,7 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--warn)">40 189</div><div class="l">satire — 3,9 %</div></div>
+  <div class="kpi"><div class="v" style="color:var(--muted)">23 790</div><div class="l">unverified — 2,3 %</div></div>
 </div>
 <p class="small muted">La satire est une <b>classe à part entière</b> (jamais fusionnée avec la
 désinformation) ; les cas limites portent un drapeau <code>ambiguous</code>. On ne confond pas
