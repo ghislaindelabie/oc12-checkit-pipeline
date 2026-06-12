@@ -1,0 +1,41 @@
+{
+  "claims": [
+    {
+      "text": "Une vidéo montre une inondation à Paris en juin 2026",
+      "claimant": "Posts on social media",
+      "claimDate": "2026-06-01T00:00:00Z",
+      "claimReview": [
+        {
+          "publisher": {"name": "AFP Factuel", "site": "factuel.afp.com"},
+          "url": "https://factuel.afp.com/doc.afp.com.36XYZ",
+          "title": "Non, cette vidéo ne montre pas une inondation à Paris",
+          "reviewDate": "2026-06-02T10:00:00Z",
+          "textualRating": "Faux",
+          "languageCode": "fr"
+        }
+      ]
+    },
+    {
+      "text": "A claim reviewed by two organizations",
+      "claimant": "Viral post",
+      "claimDate": "2026-05-30T00:00:00Z",
+      "claimReview": [
+        {
+          "publisher": {"name": "PolitiFact", "site": "politifact.com"},
+          "url": "https://www.politifact.com/factchecks/2026/x",
+          "title": "Claim is mostly false",
+          "textualRating": "Mostly False",
+          "languageCode": "en"
+        },
+        {
+          "publisher": {"name": "FactCheck.org", "site": "factcheck.org"},
+          "url": "https://www.factcheck.org/2026/y",
+          "title": "Misleading viral post",
+          "textualRating": "Misleading",
+          "languageCode": "en"
+        }
+      ]
+    }
+  ],
+  "nextPageToken": "abc"
+}

@@ -13,7 +13,7 @@ redistribuées.
 
 ```
 Corpus annotés (DGM4, Fakeddit, FakeNewsNet)   ─┐  DAG @once
-Dumps fact-checking (ClaimReview, EUvsDisinfo) ─┤  DAG @weekly
+Fact-checking + flux fake (ClaimReview, Webz) ─┤  DAG @weekly
 APIs presse (GDELT, NewsData, Guardian, …)     ─┼─ extract ──► JSONL brut
 Flux RSS (presse FR + satire)                  ─┤  DAG @daily      │
 Bluesky (recherche publique)                   ─┘             transform ──► Parquet + index CSV
@@ -61,6 +61,12 @@ Orchestration Airflow 3.2 (Astro CLI, UI sur http://localhost:8081) :
 cd airflow && astro dev start                      # 3 DAGs : @daily, @weekly, manuel
 ```
 
+Tableau de bord KPI (lecture seule sur la base) :
+
+```bash
+uv run streamlit run dashboard/app.py --server.port 8501
+```
+
 Les données (JSONL brut, Parquet, images, corpus) sont écrites sous
 `CHECKIT_DATA_ROOT` (par défaut `/data/files/OC12`), jamais dans le dépôt.
 
@@ -91,4 +97,4 @@ dashboard/            tableau de bord Streamlit (étape 5)
 - [x] Pipeline de transformation + schéma conceptuel (999 992 lignes, validité 97,8 %)
 - [x] Chargement PostgreSQL 16 sécurisé (978 289 lignes, idempotence prouvée, scram-sha-256 + rôles + pgcrypto)
 - [x] DAGs Airflow 3.2 (@daily, @weekly, corpus manuel) via Astro CLI
-- [ ] Dashboard KPI + plan de monitoring
+- [x] Dashboard KPI Streamlit (port 8501) + plan de monitoring

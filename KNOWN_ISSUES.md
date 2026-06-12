@@ -62,3 +62,13 @@ long tail as unmapped (counted, not dropped).
    bridge gateway (172.17.0.1). LAN remains closed.
 3. **Airflow 3 manual runs have NO data interval** (None) — DAG code must not
    assume `data_interval_end` exists; checkit_live_daily falls back to a 24h window.
+
+## AFP Factuel — WAF-blocked from server IPs; thin in the ClaimReview dump (2026-06-05)
+
+The DataCommons ClaimReview dump covers ~95 fact-checkers but AFP barely
+submits to it (9 rows total, 2 from AFP Factuel) — French verdict coverage is
+therefore thin in our bulk label layer. AFP's own RSS/pages are Akamai-403'd
+from datacenter IPs (even robots.txt), so direct feed ingestion is out.
+Compliant route to AFP verdicts: the Google Fact Check Tools API in
+query-only mode (its ToS forbids permanent storage, not querying) — planned
+as `checkit.factcheck_query`, pending a free Google Cloud API key.

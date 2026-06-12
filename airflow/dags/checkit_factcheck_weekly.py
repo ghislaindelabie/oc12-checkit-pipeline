@@ -38,7 +38,23 @@ def checkit_factcheck_weekly():
         print(f"claimreview refreshed: {count} verdicts")
         return str(path)
 
-    refresh_claimreview()
+    @task
+    def refresh_webz() -> str:
+        from checkit.config import Settings
+        from checkit.corpus.webz_fakenews import download_webz, load_webz
+        from checkit.storage import append_jsonl, raw_path
+
+        settings = Settings()
+        settings.ensure_dirs()
+        download_webz(settings.corpora_dir)  # incremental: new drops only
+        records = load_webz(settings.corpora_dir)
+        path = raw_path(settings.raw_dir, "webz-fakenews", "snapshot")
+        path.unlink(missing_ok=True)
+        count = append_jsonl(records, path)
+        print(f"webz refreshed: {count} records")
+        return str(path)
+
+    [refresh_claimreview(), refresh_webz()]
 
 
 checkit_factcheck_weekly()

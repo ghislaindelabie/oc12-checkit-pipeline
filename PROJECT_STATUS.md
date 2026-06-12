@@ -50,6 +50,7 @@ monitoring plan. Five graded deliverables, one per mission step.
 | DGM4 downloader (HF 10.7 GB) + loader | ✅ **live: 281,015 records** (= HF row count) across 9 fine-grained manipulation classes incl. combos; 128,441 orig / 152,574 manipulated; grounding flags kept |
 | ClaimReview aggregate dump (DataCommons) | ✅ **live: 98,455 verdicts** from IFCN fact-checkers worldwide, with appearance-URL join surface; ratings kept raw (multilingual). Malformed-date fix |
 | EUvsDisinfo | ⏸ 403 from server IPs (KNOWN_ISSUES) — ClaimReview covers the need |
+| Webz.io fake-news-dataset (added 2026-06-05 on owner's request) | ✅ qualified + integrated: the only LIVE fake-side source (weekly drops, 94% measured image pairing, ~106K articles since Feb 2025); source-level label at confidence 0.5, ai_allow opt-outs respected, trust.bias never used as label. Full fiche in the Step 1 report |
 
 ### Phase 4 — Transform pipeline (2026-06-05) ✅
 
@@ -79,6 +80,15 @@ by design honesty.
 | Airflow 3.2 via Astro CLI (Runtime 3.2-5) | ✅ project in `airflow/`; port 8081 (8080 taken on P710); package mounted via PYTHONPATH (no rebuild per code change); host-gateway to data Postgres |
 | 3 DAGs | ✅ `checkit_live_daily` (@daily: extract→transform→gate→load, window = data interval, XCom = paths only) · `checkit_factcheck_weekly` · `checkit_corpus_once` (manual) |
 | Run evidence | `deliverables/step4/preuves-execution.md` (CLI evidence in; DAG-run output appended after first triggered run) |
+
+### Phase 6 — KPI dashboard + monitoring plan (2026-06-05) ✅
+
+| Component | State |
+|---|---|
+| Streamlit dashboard (`dashboard/app.py`, FR, non-technical wording) | ✅ 4 KPI cards (volume/validité/appariement strict+déclaré/durée+débit) + label donut + per-source bar + quality-over-runs line with the 50% gate threshold drawn; empty-state and DB-down guards; cache ttl 300s |
+| Read path | ✅ read-only `dashboard_reader` role; UI-free `dashboard/queries.py` so KPI logic is unit-tested |
+| **Live boot verified** | ✅ HTTP 200 on :8501, healthz ok; real data through the read-only role (978K articles: fake 569,637 / real 345,268 / satire 40,135 / unverified 23,249) |
+| Monitoring plan (`docs/plan-monitoring.md`, FR) | ✅ seuils / gestion erreurs / fréquences + **enforced-vs-observed status per claim** + Mermaid alert flow; alert stub explicitly documented as not-wired |
 
 ### Cross-cutting
 

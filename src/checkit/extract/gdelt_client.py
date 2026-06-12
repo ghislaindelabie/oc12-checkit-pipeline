@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 
 from checkit.extract.http import get
 from checkit.extract.throttle import THROTTLE
+from checkit.lang import LANGUAGE_CODES
 from checkit.schema import RawRecord
 
 logger = logging.getLogger(__name__)
@@ -12,16 +13,6 @@ GDELT_DT_FORMAT = "%Y%m%d%H%M%S"
 # STATED limit, by the API's own throttle message: "Please limit requests to
 # one every 5 seconds" (verified live 2026-06-05; bursts escalate the penalty)
 GDELT_MIN_INTERVAL = 5.5
-
-LANGUAGE_CODES = {
-    "french": "fr",
-    "english": "en",
-    "spanish": "es",
-    "german": "de",
-    "italian": "it",
-    "portuguese": "pt",
-}
-
 
 def _parse_seendate(value: str) -> datetime | None:
     try:
