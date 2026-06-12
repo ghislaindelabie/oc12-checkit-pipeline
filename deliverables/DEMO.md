@@ -1,12 +1,20 @@
 # Guide de démonstration — CheckIt.AI
 
-Tout tourne sur le P710. Depuis le Mac, ouvrir un **tunnel SSH** pour accéder aux
-interfaces web dans le navigateur :
+Tout tourne sur le P710. **Accès direct depuis le portable via le réseau Tailscale**
+(aucun tunnel SSH nécessaire — réseau privé chiffré, accessible uniquement à vos appareils) :
 
-```bash
-# adapter le port Airflow si besoin (voir ci-dessous) ; 8501 = Streamlit
-ssh -L 8501:localhost:8501 -L 13957:localhost:13957 -L 5433:localhost:5433 <p710>
-```
+| Surface | URL Tailnet |
+|---|---|
+| **Airflow** ⭐ | **https://p710.tail3089b5.ts.net:8443** |
+| **Streamlit** | **http://p710.tail3089b5.ts.net:8501** (ou `http://100.127.169.14:8501`) |
+
+> Airflow est exposé via `tailscale serve` (HTTPS, tailnet uniquement). Streamlit écoute
+> sur `0.0.0.0:8501`, donc joignable directement par le nom MagicDNS ou l'IP tailnet.
+> Si Airflow redémarre et change de port local, ré-exécuter :
+> `tailscale serve --bg --https=8443 http://127.0.0.1:<nouveau_port>`
+> (trouver le port : `docker ps | grep api-server`).
+
+La base PostgreSQL et les démos CLI se font **sur le P710** (SSH), pas besoin de les exposer.
 
 ## Surfaces démontrables (4)
 
