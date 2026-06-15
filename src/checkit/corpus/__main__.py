@@ -33,7 +33,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-download", action="store_true",
                         help="reuse already-downloaded files")
     parser.add_argument("--fetch-text", action="store_true",
-                        help="euvsdisinfo: fetch article text+image per URL (enrichment)")
+                        help="URL-based corpora (fakenewsnet, euvsdisinfo): fetch article "
+                             "text + og:image per URL to recover pairing")
     parser.add_argument("--screen-images", action="store_true",
                         help="measure og:image yield on a sample instead of writing JSONL")
     parser.add_argument("--sample", type=int, default=50,
@@ -47,10 +48,6 @@ def main(argv: list[str] | None = None) -> int:
         if not args.skip_download:
             download_euvsdisinfo(settings.corpora_dir)
         records = load_euvsdisinfo(settings.corpora_dir)
-        if args.fetch_text:
-            from checkit.corpus.enrich import enrich_records
-            stats = enrich_records(records)
-            logger.info("euvsdisinfo enrichment: %s", stats)
     elif args.dataset == "webz":
         if not args.skip_download:
             download_webz(settings.corpora_dir)
@@ -81,8 +78,16 @@ def main(argv: list[str] | None = None) -> int:
                     out, report["overall"]["image_rate"])
         return 0
 
+    if args.fetch_text:
+        from checkit.corpus.enrich import enrich_records
+        stats = enrich_records(records)
+        logger.info("%s enrichment: %s", args.dataset, stats)
+
     run_date = datetime.now(UTC).strftime("%Y-%m-%d")
     path = raw_path(settings.raw_dir, args.dataset, run_date)
+    # corpus loads are full reloads — overwrite, never append (avoids duplicate
+    # copies if the same dataset is loaded twice in one day)
+    path.unlink(missing_ok=True)
     written = append_jsonl(records, path)
     by_label: dict[str, int] = {}
     for record in records:
