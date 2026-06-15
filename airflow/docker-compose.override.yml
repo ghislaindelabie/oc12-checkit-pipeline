@@ -2,12 +2,21 @@
 # - mount the checkit package (PYTHONPATH) so DAG code changes need no rebuild
 # - mount the data drive at the same path as on the host
 # - host-gateway so containers reach the data Postgres on host port 5433
+# - run as the HOST uid (1000), group root (0): files the DAGs create under
+#   /data are then owned by the host user, matching the CLI — no more
+#   container(50000)-vs-host(1000) permission collisions. gid 0 keeps write
+#   access to Airflow's own dirs (owned astro:root, group-writable).
 x-checkit: &checkit
+  user: "1000:0"
   volumes:
     - ../src:/usr/local/airflow/checkit_src/src:ro
     - /data/files/OC12:/data/files/OC12
   environment:
     PYTHONPATH: /usr/local/airflow/checkit_src/src
+    # uid 1000 isn't in the image's /etc/passwd; these env vars let Python's
+    # getpass.getuser()/HOME resolution succeed without a pwd lookup
+    USER: astro
+    HOME: /usr/local/airflow
   extra_hosts:
     - "host.docker.internal:host-gateway"
 
